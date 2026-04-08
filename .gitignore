@@ -1,0 +1,262 @@
+# =============================================================================
+# QuraanKareem.app — .gitignore
+# Covers: Angular (Node), ASP.NET Core (.NET), FastAPI (Python), Supabase,
+#         Bunny, Docker, IDEs, OS files, secrets.
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Secrets & environment files (NEVER commit)
+# -----------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+secrets/
+**/appsettings.*.json
+!**/appsettings.json
+!**/appsettings.Example.json
+
+# -----------------------------------------------------------------------------
+# Node / Angular (apps/web)
+# -----------------------------------------------------------------------------
+node_modules/
+.pnp/
+.pnp.js
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnpm-store/
+
+# Angular build output
+dist/
+tmp/
+out-tsc/
+bazel-out/
+.angular/
+.angular/cache/
+
+# Test / coverage
+coverage/
+*.lcov
+.nyc_output/
+junit.xml
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+*.log
+logs/
+
+# Misc
+.eslintcache
+.stylelintcache
+.parcel-cache/
+.cache/
+.vite/
+.turbo/
+.next/
+.nuxt/
+.svelte-kit/
+
+# -----------------------------------------------------------------------------
+# .NET / ASP.NET Core (services/api)
+# -----------------------------------------------------------------------------
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+[Bb]uild/
+bld/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio / Rider
+.vs/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+*.swp
+
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+**/Properties/launchSettings.json
+
+# NuGet
+*.nupkg
+*.snupkg
+**/packages/*
+!**/packages/build/
+*.nuget.props
+*.nuget.targets
+
+# Test results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.VisualState.xml
+TestResult.xml
+nunit-*.xml
+coverage*.json
+coverage*.xml
+coverage*.info
+
+# Roslyn / analyzers
+*.sarif
+
+# -----------------------------------------------------------------------------
+# Python / FastAPI (services/ai)
+# -----------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+.env/
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Testing / coverage
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+htmlcov/
+
+# Type checkers / linters
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+.ruff_cache/
+
+# Jupyter
+.ipynb_checkpoints
+
+# -----------------------------------------------------------------------------
+# Supabase
+# -----------------------------------------------------------------------------
+**/supabase/.branches
+**/supabase/.temp
+**/supabase/.env
+supabase/.branches/
+supabase/.temp/
+
+# -----------------------------------------------------------------------------
+# Docker
+# -----------------------------------------------------------------------------
+*.pid
+docker-compose.override.yml
+
+# -----------------------------------------------------------------------------
+# IDE / Editors
+# -----------------------------------------------------------------------------
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/
+*.code-workspace
+.fleet/
+.zed/
+
+# JetBrains
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# -----------------------------------------------------------------------------
+# OS files
+# -----------------------------------------------------------------------------
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# -----------------------------------------------------------------------------
+# Misc
+# -----------------------------------------------------------------------------
+*.bak
+*.tmp
+*.orig
+*.rej
+*.swp
+*.swo
+.tmp/
+tmp/
+
+# Local-only Specify state
+.specify/init-options.json
