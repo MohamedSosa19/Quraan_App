@@ -1,77 +1,15 @@
 # =============================================================================
-# QuraanKareem.app — .gitignore
-# Covers: Angular (Node), ASP.NET Core (.NET), FastAPI (Python), Supabase,
-#         Bunny, Docker, IDEs, OS files, secrets.
+# Quraan App — .gitignore
+# Stack: ASP.NET Core 8 (C#) + Entity Framework Core + SQL Server (backend)
+#        Angular 18 + TypeScript (frontend)
 # =============================================================================
 
-# -----------------------------------------------------------------------------
-# Secrets & environment files (NEVER commit)
-# -----------------------------------------------------------------------------
-.env
-.env.*
-!.env.example
-*.pem
-*.key
-*.crt
-*.p12
-*.pfx
-secrets/
-**/appsettings.*.json
-!**/appsettings.json
-!**/appsettings.Example.json
 
 # -----------------------------------------------------------------------------
-# Node / Angular (apps/web)
+# .NET / ASP.NET Core / Visual Studio
 # -----------------------------------------------------------------------------
-node_modules/
-.pnp/
-.pnp.js
-.yarn/cache
-.yarn/unplugged
-.yarn/build-state.yml
-.yarn/install-state.gz
-.pnpm-store/
 
-# Angular build output
-dist/
-tmp/
-out-tsc/
-bazel-out/
-.angular/
-.angular/cache/
-
-# Test / coverage
-coverage/
-*.lcov
-.nyc_output/
-junit.xml
-
-# Logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-*.log
-logs/
-
-# Misc
-.eslintcache
-.stylelintcache
-.parcel-cache/
-.cache/
-.vite/
-.turbo/
-.next/
-.nuxt/
-.svelte-kit/
-
-# -----------------------------------------------------------------------------
-# .NET / ASP.NET Core (services/api)
-# -----------------------------------------------------------------------------
-[Bb]in/
-[Oo]bj/
-[Oo]ut/
+# Build results
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
@@ -81,154 +19,215 @@ x86/
 [Ww][Ii][Nn]32/
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/
-[Bb]uild/
 bld/
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
 [Ll]og/
 [Ll]ogs/
 
-# Visual Studio / Rider
+# .NET tooling
+project.lock.json
+project.fragment.lock.json
+artifacts/
+*.binlog
+*.tlog
+*.nupkg
+*.snupkg
+
+# Visual Studio
 .vs/
-.idea/
-*.user
 *.suo
+*.user
 *.userosscache
 *.sln.docstates
 *.userprefs
 *.swp
+*.psess
+*.vsp
+*.vspx
+*.sap
 
-# .NET Core
-project.lock.json
-project.fragment.lock.json
-artifacts/
-**/Properties/launchSettings.json
+# Rider / ReSharper
+.idea/
+*.DotSettings.user
+_ReSharper*/
+*.[Rr]e[Ss]harper
 
-# NuGet
-*.nupkg
-*.snupkg
-**/packages/*
-!**/packages/build/
-*.nuget.props
-*.nuget.targets
-
-# Test results
-[Tt]est[Rr]esult*/
-[Bb]uild[Ll]og.*
-*.VisualState.xml
-TestResult.xml
-nunit-*.xml
+# StyleCop / coverage
+StyleCopReport.xml
+*.coverage
+*.coveragexml
 coverage*.json
 coverage*.xml
 coverage*.info
+TestResults/
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
 
-# Roslyn / analyzers
-*.sarif
+# Profilers / dumps
+*.dmp
+*.heapdump
+*.pidb
+*.svclog
+*.scc
+*.opensdf
+*.sdf
+*.cachefile
+*.ncrunch*
+.*crunch*.local.xml
 
-# -----------------------------------------------------------------------------
-# Python / FastAPI (services/ai)
-# -----------------------------------------------------------------------------
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
+# NCrunch / NUnit / etc.
+nCrunchTemp_*
+*.nunit
+*.opt
+*.opensdf
+*.unsuccessfulbuild
 
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
+# Publish output
+[Pp]ublish/
+*.[Pp]ublish.xml
+*.azurePubxml
+PublishScripts/
+publish-output/
 
-# Virtual environments
-.env/
-.venv/
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+# .NET Core / SDK
+*.nuget.props
+*.nuget.targets
+.nuget/
+project.assets.json
+*.csproj.user
 
-# Testing / coverage
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-htmlcov/
-
-# Type checkers / linters
-.mypy_cache/
-.dmypy.json
-dmypy.json
-.pyre/
-.pytype/
-.ruff_cache/
-
-# Jupyter
-.ipynb_checkpoints
+# EF Core — never commit migration backups or scaffolded model snapshots
+*.bak
+*.snapshot.bak
 
 # -----------------------------------------------------------------------------
-# Supabase
+# Secrets & local configuration
 # -----------------------------------------------------------------------------
-**/supabase/.branches
-**/supabase/.temp
-**/supabase/.env
-supabase/.branches/
-supabase/.temp/
+
+# ASP.NET Core user-secrets are stored outside the repo by default, but never
+# commit anything that ends up looking like a secret if it lands here.
+secrets.json
+*.pfx
+*.p12
+*.key
+*.pem
+*.crt
+*.cer
+
+# Environment / local override config
+.env
+.env.*
+!.env.example
+appsettings.Development.json
+appsettings.Local.json
+appsettings.*.Local.json
+**/appsettings.Local.json
+**/secrets/
+
+# Azure Key Vault local cache (if any tooling drops one)
+.azure/
 
 # -----------------------------------------------------------------------------
-# Docker
+# SQL Server local files (LocalDB / Express artefacts)
 # -----------------------------------------------------------------------------
-*.pid
-docker-compose.override.yml
+
+*.mdf
+*.ldf
+*.ndf
+*.bacpac
+*.dacpac
 
 # -----------------------------------------------------------------------------
-# IDE / Editors
+# Node.js / Angular / frontend
 # -----------------------------------------------------------------------------
+
+# Dependencies
+node_modules/
+jspm_packages/
+bower_components/
+
+# Lockfile policy: keep package-lock.json (npm). If yarn or pnpm is adopted
+# later, decide once and commit only the active lockfile.
+
+# Build output
+dist/
+out-tsc/
+tmp/
+.tsbuildinfo
+*.tsbuildinfo
+
+# Angular cache + workspace
+.angular/
+.ng_pkg_build/
+.ng-cache/
+**/.angular/cache/
+
+# Test / coverage output
+coverage/
+.nyc_output/
+**/coverage/
+**/.nyc_output/
+karma-results/
+playwright-report/
+playwright/.cache/
+test-results/
+e2e/screenshots/
+e2e/videos/
+
+# Generated API client (regenerated from backend swagger.json — see plan R-10)
+# Leave the file committed for offline frontend builds; ignore the staging dir.
+frontend/src/app/api/.generated-tmp/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+*.log
+
+# Misc tooling caches
+.eslintcache
+.stylelintcache
+.parcel-cache/
+.rollup.cache/
+.vite/
+.next/
+.nuxt/
+.turbo/
+.cache/
+
+# Storybook (in case it's added later)
+storybook-static/
+
+# -----------------------------------------------------------------------------
+# Editors / IDEs
+# -----------------------------------------------------------------------------
+
+# VS Code — share recommended settings, ignore personal/local files
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+!.vscode/*.code-snippets
 .history/
 *.code-workspace
-.fleet/
-.zed/
 
-# JetBrains
-.idea/
-*.iml
-*.ipr
-*.iws
+# Sublime / vim / emacs
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+.\#*
+\#*\#
 
 # -----------------------------------------------------------------------------
-# OS files
+# Operating system
 # -----------------------------------------------------------------------------
-# macOS
-.DS_Store
-.AppleDouble
-.LSOverride
-Icon
-._*
-.Spotlight-V100
-.Trashes
 
 # Windows
 Thumbs.db
@@ -237,7 +236,21 @@ ehthumbs.db
 ehthumbs_vista.db
 Desktop.ini
 $RECYCLE.BIN/
+*.stackdump
 *.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+.fseventsd
+.DocumentRevisions-V100
+.TemporaryItems
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
 
 # Linux
 *~
@@ -247,16 +260,35 @@ $RECYCLE.BIN/
 .nfs*
 
 # -----------------------------------------------------------------------------
+# Docker / containers (local volumes only — not committed compose files)
+# -----------------------------------------------------------------------------
+
+docker-compose.override.yml
+.docker/
+*.pid
+
+# -----------------------------------------------------------------------------
+# Spec Kit / Claude Code local artefacts
+# -----------------------------------------------------------------------------
+
+# Claude Code local-only settings (per-developer); the shared `.claude/settings.json`
+# (if added) MUST stay tracked.
+.claude/settings.local.json
+
+# Spec Kit per-developer init options (machine-specific generation flags)
+.specify/init-options.json
+
+# -----------------------------------------------------------------------------
 # Misc
 # -----------------------------------------------------------------------------
-*.bak
-*.tmp
+
+# Backup files
 *.orig
 *.rej
-*.swp
-*.swo
-.tmp/
-tmp/
+*.bak
+*~.nib
 
-# Local-only Specify state
-.specify/init-options.json
+# Local notes / scratch
+TODO.local.md
+NOTES.local.md
+scratch/

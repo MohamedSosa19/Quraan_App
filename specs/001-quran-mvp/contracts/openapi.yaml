@@ -1,0 +1,635 @@
+openapi: 3.0.3
+info:
+  title: Quran & Islamic Companion Web App API
+  version: "1.0.0"
+  description: >
+    REST API for the Quran & Islamic Companion MVP. All paths are versioned
+    under `/api/v1`. Errors follow RFC 7807 (`application/problem+json`).
+    Read endpoints are anonymous-allowed; user-scoped endpoints require a
+    Bearer access token (15-minute lifetime). Refresh tokens are delivered
+    in an `HttpOnly; Secure; SameSite=Strict` cookie scoped to
+    `/api/v1/auth/refresh`.
+servers:
+  - url: https://api.quraan.app/api/v1
+    description: Production
+  - url: http://localhost:5080/api/v1
+    description: Local dev
+tags:
+  - name: surahs
+  - name: ayahs
+  - name: search
+  - name: tafsir
+  - name: audio
+  - name: bookmarks
+  - name: lastread
+  - name: auth
+  - name: users
+  - name: health
+
+security:
+  - bearerAuth: []
+  - {}
+
+paths:
+
+  # ---------------- Quran (US1) -------------------------------------------
+  /surahs:
+    get:
+      tags: [surahs]
+      summary: List all 114 Surahs
+      security: [{}]
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+      responses:
+        '200':
+          description: Surah list
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/SurahSummary' }
+
+  /surahs/{surahId}:
+    get:
+      tags: [surahs]
+      summary: Get Surah header + Ayahs (with translation)
+      security: [{}]
+      parameters:
+        - in: path
+          name: surahId
+          required: true
+          schema: { type: integer, minimum: 1, maximum: 114 }
+        - in: query
+          name: translation
+          schema: { type: string, default: "en.sahih" }
+        - $ref: '#/components/parameters/AcceptLanguage'
+      responses:
+        '200':
+          description: Surah with all Ayahs
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SurahDetail' }
+        '404': { $ref: '#/components/responses/Problem404' }
+
+  /surahs/{surahId}/ayahs/{numberInSurah}:
+    get:
+      tags: [ayahs]
+      summary: Get a single Ayah
+      security: [{}]
+      parameters:
+        - in: path
+          name: surahId
+          required: true
+          schema: { type: integer, minimum: 1, maximum: 114 }
+        - in: path
+          name: numberInSurah
+          required: true
+          schema: { type: integer, minimum: 1 }
+        - in: query
+          name: translation
+          schema: { type: string, default: "en.sahih" }
+      responses:
+        '200':
+          description: Ayah
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Ayah' }
+        '404': { $ref: '#/components/responses/Problem404' }
+
+  # ---------------- Search (US4) ------------------------------------------
+  /search:
+    get:
+      tags: [search]
+      summary: Search Surahs (by name) and Ayahs (Arabic + English)
+      security: [{}]
+      parameters:
+        - in: query
+          name: q
+          required: true
+          schema: { type: string, minLength: 1, maxLength: 200 }
+        - in: query
+          name: page
+          schema: { type: integer, default: 1, minimum: 1 }
+        - in: query
+          name: pageSize
+          schema: { type: integer, default: 20, minimum: 1, maximum: 100 }
+        - in: query
+          name: translation
+          schema: { type: string, default: "en.sahih" }
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SearchResponse' }
+        '400': { $ref: '#/components/responses/Problem400' }
+
+  # ---------------- Tafsir (US5) ------------------------------------------
+  /tafsir/{surahId}/{numberInSurah}:
+    get:
+      tags: [tafsir]
+      summary: Get Tafsir Ibn Kathir entry for an Ayah
+      security: [{}]
+      parameters:
+        - in: path
+          name: surahId
+          required: true
+          schema: { type: integer, minimum: 1, maximum: 114 }
+        - in: path
+          name: numberInSurah
+          required: true
+          schema: { type: integer, minimum: 1 }
+        - in: query
+          name: source
+          schema: { type: string, default: "ibn-kathir-en" }
+      responses:
+        '200':
+          description: Tafsir entry
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TafsirEntry' }
+        '404':
+          description: No Tafsir entry exists for this Ayah (FR-023)
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/ProblemDetails' }
+
+  # ---------------- Audio (US3) -------------------------------------------
+  /audio/{surahId}:
+    get:
+      tags: [audio]
+      summary: Get audio stream URL + per-Ayah timing markers for a Surah
+      security: [{}]
+      parameters:
+        - in: path
+          name: surahId
+          required: true
+          schema: { type: integer, minimum: 1, maximum: 114 }
+        - in: query
+          name: reciter
+          schema: { type: string, default: "ar.alafasy" }
+      responses:
+        '200':
+          description: Audio metadata
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AudioRecitation' }
+        '404': { $ref: '#/components/responses/Problem404' }
+        '502':
+          description: Upstream audio source unreachable (FR-014)
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/ProblemDetails' }
+
+  # ---------------- Auth (US6) --------------------------------------------
+  /auth/register:
+    post:
+      tags: [auth]
+      summary: Register a new account (email + password)
+      security: [{}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RegisterRequest' }
+      responses:
+        '201':
+          description: Registered + signed in
+          headers:
+            Set-Cookie:
+              description: Refresh-token cookie (HttpOnly; Secure; SameSite=Strict; Path=/api/v1/auth/refresh)
+              schema: { type: string }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AuthResponse' }
+        '400': { $ref: '#/components/responses/Problem400' }
+        '409':
+          description: Email already in use
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/ProblemDetails' }
+
+  /auth/login:
+    post:
+      tags: [auth]
+      summary: Sign in with email + password
+      security: [{}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LoginRequest' }
+      responses:
+        '200':
+          description: Signed in
+          headers:
+            Set-Cookie:
+              description: Refresh-token cookie
+              schema: { type: string }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AuthResponse' }
+        '401':
+          description: Generic invalid-credentials response (FR-029)
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/ProblemDetails' }
+
+  /auth/refresh:
+    post:
+      tags: [auth]
+      summary: Rotate the refresh-token cookie and issue a fresh access token
+      security: [{}]
+      description: Reads the refresh-token cookie; sets a new one in the response.
+      responses:
+        '200':
+          description: New access token issued
+          headers:
+            Set-Cookie:
+              description: Rotated refresh-token cookie
+              schema: { type: string }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AccessTokenResponse' }
+        '401': { $ref: '#/components/responses/Problem401' }
+
+  /auth/logout:
+    post:
+      tags: [auth]
+      summary: Sign out — revoke active refresh token and clear cookie
+      responses:
+        '204':
+          description: Signed out
+
+  # ---------------- Users (US2 / US6) -------------------------------------
+  /users/me:
+    get:
+      tags: [users]
+      summary: Get the signed-in user's profile (incl. preferred language)
+      responses:
+        '200':
+          description: Profile
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UserProfile' }
+        '401': { $ref: '#/components/responses/Problem401' }
+    patch:
+      tags: [users]
+      summary: Update profile (e.g., preferredLanguage)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UserProfilePatch' }
+      responses:
+        '200':
+          description: Updated profile
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UserProfile' }
+        '400': { $ref: '#/components/responses/Problem400' }
+        '401': { $ref: '#/components/responses/Problem401' }
+
+  # ---------------- Bookmarks (US7) ---------------------------------------
+  /bookmarks:
+    get:
+      tags: [bookmarks]
+      summary: List the signed-in user's bookmarks
+      parameters:
+        - in: query
+          name: page
+          schema: { type: integer, default: 1, minimum: 1 }
+        - in: query
+          name: pageSize
+          schema: { type: integer, default: 50, minimum: 1, maximum: 100 }
+      responses:
+        '200':
+          description: Page of bookmarks
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BookmarkPage' }
+        '401': { $ref: '#/components/responses/Problem401' }
+    post:
+      tags: [bookmarks]
+      summary: Create a bookmark on an Ayah
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateBookmarkRequest' }
+      responses:
+        '201':
+          description: Bookmark created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Bookmark' }
+        '400': { $ref: '#/components/responses/Problem400' }
+        '401': { $ref: '#/components/responses/Problem401' }
+        '409':
+          description: Already bookmarked or per-user limit reached
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/ProblemDetails' }
+
+  /bookmarks/{bookmarkId}:
+    delete:
+      tags: [bookmarks]
+      summary: Remove a bookmark
+      parameters:
+        - in: path
+          name: bookmarkId
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '204':
+          description: Removed
+        '401': { $ref: '#/components/responses/Problem401' }
+        '404': { $ref: '#/components/responses/Problem404' }
+
+  # ---------------- Last-read (FR-035) ------------------------------------
+  /lastread/me:
+    get:
+      tags: [lastread]
+      summary: Get the signed-in user's last-read position
+      responses:
+        '200':
+          description: Position (or null if unset)
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/LastReadPosition'
+                  - type: 'null'
+        '401': { $ref: '#/components/responses/Problem401' }
+    put:
+      tags: [lastread]
+      summary: Upsert the signed-in user's last-read position (last-write-wins by updatedAt)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LastReadPosition' }
+      responses:
+        '200':
+          description: Updated position
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LastReadPosition' }
+        '400': { $ref: '#/components/responses/Problem400' }
+        '401': { $ref: '#/components/responses/Problem401' }
+
+  # ---------------- Health (Constitution VII) -----------------------------
+  /health/live:
+    get:
+      tags: [health]
+      summary: Liveness probe
+      security: [{}]
+      responses:
+        '200':
+          description: Process is up
+  /health/ready:
+    get:
+      tags: [health]
+      summary: Readiness probe (DB + cache reachable)
+      security: [{}]
+      responses:
+        '200':
+          description: Ready
+        '503':
+          description: Not ready
+
+components:
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    AcceptLanguage:
+      in: header
+      name: Accept-Language
+      schema: { type: string, enum: [ar, en], default: en }
+      description: UI language hint; does not change content (Quran/translation are explicit).
+
+  responses:
+    Problem400:
+      description: Bad request
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/ProblemDetails' }
+    Problem401:
+      description: Unauthorized
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/ProblemDetails' }
+    Problem404:
+      description: Not found
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/ProblemDetails' }
+
+  schemas:
+
+    SurahSummary:
+      type: object
+      required: [id, arabicName, transliteratedName, englishName, revelationPlace, ayahCount]
+      properties:
+        id: { type: integer, minimum: 1, maximum: 114 }
+        arabicName: { type: string }
+        transliteratedName: { type: string }
+        englishName: { type: string }
+        revelationPlace: { type: string, enum: [Meccan, Medinan] }
+        ayahCount: { type: integer }
+
+    SurahDetail:
+      allOf:
+        - $ref: '#/components/schemas/SurahSummary'
+        - type: object
+          required: [translation, ayahs]
+          properties:
+            translation: { $ref: '#/components/schemas/TranslationInfo' }
+            ayahs:
+              type: array
+              items: { $ref: '#/components/schemas/Ayah' }
+
+    TranslationInfo:
+      type: object
+      required: [code, language, name, attribution]
+      properties:
+        code: { type: string }
+        language: { type: string, example: "en" }
+        name: { type: string }
+        attribution: { type: string }
+
+    Ayah:
+      type: object
+      required: [id, surahId, numberInSurah, arabicText, translationText, juzNumber, hizbQuarter, sajda]
+      properties:
+        id: { type: integer }
+        surahId: { type: integer }
+        numberInSurah: { type: integer }
+        arabicText: { type: string, description: "Uthmani Hafs, with diacritics" }
+        translationText: { type: string }
+        juzNumber: { type: integer, minimum: 1, maximum: 30 }
+        hizbQuarter: { type: integer, minimum: 1, maximum: 240 }
+        sajda: { type: boolean }
+
+    SearchResponse:
+      type: object
+      required: [query, surahMatches, ayahMatches, page, pageSize, totalAyahMatches]
+      properties:
+        query: { type: string }
+        surahMatches:
+          type: array
+          items: { $ref: '#/components/schemas/SurahSummary' }
+        ayahMatches:
+          type: array
+          items: { $ref: '#/components/schemas/AyahMatch' }
+        page: { type: integer }
+        pageSize: { type: integer }
+        totalAyahMatches: { type: integer }
+
+    AyahMatch:
+      allOf:
+        - $ref: '#/components/schemas/Ayah'
+        - type: object
+          properties:
+            matchedIn: { type: string, enum: [arabic, translation] }
+            highlightSnippet: { type: string }
+
+    TafsirEntry:
+      type: object
+      required: [surahId, numberInSurah, source, body]
+      properties:
+        surahId: { type: integer }
+        numberInSurah: { type: integer }
+        source:
+          type: object
+          required: [code, name, attribution]
+          properties:
+            code: { type: string, example: "ibn-kathir-en" }
+            name: { type: string }
+            attribution: { type: string }
+        body: { type: string }
+
+    AudioRecitation:
+      type: object
+      required: [surahId, reciter, audioUrl, hasTimings, ayahTimings]
+      properties:
+        surahId: { type: integer }
+        reciter:
+          type: object
+          required: [code, name, arabicName, attribution]
+          properties:
+            code: { type: string, example: "ar.alafasy" }
+            name: { type: string }
+            arabicName: { type: string }
+            attribution: { type: string }
+        audioUrl: { type: string, format: uri }
+        hasTimings: { type: boolean }
+        ayahTimings:
+          type: array
+          description: Empty when hasTimings is false (FR-013).
+          items:
+            type: object
+            required: [numberInSurah, fromMs, toMs]
+            properties:
+              numberInSurah: { type: integer }
+              fromMs: { type: integer }
+              toMs: { type: integer }
+
+    RegisterRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string, format: email }
+        password: { type: string, format: password, minLength: 12, maxLength: 256 }
+        displayName: { type: string, maxLength: 128 }
+        preferredLanguage: { type: string, enum: [ar, en], default: en }
+
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string, format: email }
+        password: { type: string, format: password }
+
+    AccessTokenResponse:
+      type: object
+      required: [accessToken, expiresInSeconds]
+      properties:
+        accessToken: { type: string, description: "JWT, 15-minute lifetime" }
+        expiresInSeconds: { type: integer, example: 900 }
+
+    AuthResponse:
+      allOf:
+        - $ref: '#/components/schemas/AccessTokenResponse'
+        - type: object
+          required: [user]
+          properties:
+            user: { $ref: '#/components/schemas/UserProfile' }
+
+    UserProfile:
+      type: object
+      required: [id, email, preferredLanguage]
+      properties:
+        id: { type: string, format: uuid }
+        email: { type: string, format: email }
+        displayName: { type: string }
+        preferredLanguage: { type: string, enum: [ar, en] }
+
+    UserProfilePatch:
+      type: object
+      properties:
+        displayName: { type: string, maxLength: 128 }
+        preferredLanguage: { type: string, enum: [ar, en] }
+
+    Bookmark:
+      type: object
+      required: [id, ayahId, surahId, numberInSurah, createdAt]
+      properties:
+        id: { type: string, format: uuid }
+        ayahId: { type: integer }
+        surahId: { type: integer }
+        numberInSurah: { type: integer }
+        createdAt: { type: string, format: date-time }
+
+    BookmarkPage:
+      type: object
+      required: [items, page, pageSize, total]
+      properties:
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/Bookmark' }
+        page: { type: integer }
+        pageSize: { type: integer }
+        total: { type: integer }
+
+    CreateBookmarkRequest:
+      type: object
+      required: [surahId, numberInSurah]
+      properties:
+        surahId: { type: integer, minimum: 1, maximum: 114 }
+        numberInSurah: { type: integer, minimum: 1 }
+
+    LastReadPosition:
+      type: object
+      required: [surahId, numberInSurah, updatedAt]
+      properties:
+        surahId: { type: integer, minimum: 1, maximum: 114 }
+        numberInSurah: { type: integer, minimum: 1 }
+        updatedAt: { type: string, format: date-time, description: "Client-supplied; server uses last-write-wins by this value." }
+
+    ProblemDetails:
+      type: object
+      description: RFC 7807 problem details
+      required: [type, title, status]
+      properties:
+        type: { type: string, format: uri, example: "https://quraan.app/problems/bookmark-limit-reached" }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+        instance: { type: string }
+        correlationId: { type: string }
