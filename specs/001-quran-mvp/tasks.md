@@ -51,92 +51,92 @@ description: "Task list for 001-quran-mvp implementation"
 
 ### Domain entities (data-model.md)
 
-- [ ] T016 [P] Create `backend/src/Quraan.Domain/Entities/Surah.cs` with properties from data-model.md §Surah
-- [ ] T017 [P] Create `backend/src/Quraan.Domain/Entities/Ayah.cs` with properties from data-model.md §Ayah
-- [ ] T018 [P] Create `backend/src/Quraan.Domain/Entities/Translation.cs` and `backend/src/Quraan.Domain/Entities/AyahTranslation.cs` per data-model.md §Translation/§AyahTranslation
-- [ ] T019 [P] Create `backend/src/Quraan.Domain/Entities/TafsirSource.cs` and `backend/src/Quraan.Domain/Entities/TafsirEntry.cs` per data-model.md §TafsirSource/§TafsirEntry
-- [ ] T020 [P] Create `backend/src/Quraan.Domain/Entities/Reciter.cs` per data-model.md §Reciter
-- [ ] T021 [P] Create `backend/src/Quraan.Domain/Entities/RefreshToken.cs` per data-model.md §RefreshToken
-- [ ] T022 [P] Create `backend/src/Quraan.Domain/Entities/Bookmark.cs` per data-model.md §Bookmark with `IsDeleted`/`DeletedAt` soft-delete fields
-- [ ] T023 [P] Create `backend/src/Quraan.Domain/Entities/LastReadPosition.cs` per data-model.md §LastReadPosition with `[Timestamp]` rowversion
-- [ ] T024 [P] Create `backend/src/Quraan.Domain/Common/RevelationPlace.cs` enum and `backend/src/Quraan.Domain/Common/Result.cs` `Result<T>` discriminated-union helper
-- [ ] T025 [P] Define repository interfaces `backend/src/Quraan.Domain/Repositories/{ISurahRepository,IAyahRepository,ITafsirRepository,IBookmarkRepository,ILastReadRepository,IRefreshTokenRepository}.cs`
+- [X] T016 [P] Create `backend/src/Quraan.Domain/Entities/Surah.cs` with properties from data-model.md §Surah
+- [X] T017 [P] Create `backend/src/Quraan.Domain/Entities/Ayah.cs` with properties from data-model.md §Ayah
+- [X] T018 [P] Create `backend/src/Quraan.Domain/Entities/Translation.cs` and `backend/src/Quraan.Domain/Entities/AyahTranslation.cs` per data-model.md §Translation/§AyahTranslation
+- [X] T019 [P] Create `backend/src/Quraan.Domain/Entities/TafsirSource.cs` and `backend/src/Quraan.Domain/Entities/TafsirEntry.cs` per data-model.md §TafsirSource/§TafsirEntry
+- [X] T020 [P] Create `backend/src/Quraan.Domain/Entities/Reciter.cs` per data-model.md §Reciter
+- [X] T021 [P] Create `backend/src/Quraan.Domain/Entities/RefreshToken.cs` per data-model.md §RefreshToken
+- [X] T022 [P] Create `backend/src/Quraan.Domain/Entities/Bookmark.cs` per data-model.md §Bookmark with `IsDeleted`/`DeletedAt` soft-delete fields
+- [X] T023 [P] Create `backend/src/Quraan.Domain/Entities/LastReadPosition.cs` per data-model.md §LastReadPosition with `[Timestamp]` rowversion
+- [X] T024 [P] Create `backend/src/Quraan.Domain/Common/RevelationPlace.cs` enum and `backend/src/Quraan.Domain/Common/Result.cs` `Result<T>` discriminated-union helper
+- [X] T025 [P] Define repository interfaces `backend/src/Quraan.Domain/Repositories/{ISurahRepository,IAyahRepository,ITafsirRepository,IBookmarkRepository,ILastReadRepository,IRefreshTokenRepository}.cs`
 
 ### Identity + Auth foundation
 
-- [ ] T026 [P] Create `backend/src/Quraan.Infrastructure/Identity/ApplicationUser.cs` inheriting `IdentityUser<Guid>` with `DisplayName`, `PreferredLanguage`, `CreatedAt`, `LastSignInAt`
-- [ ] T027 [P] Create `backend/src/Quraan.Infrastructure/Identity/Argon2idPasswordHasher.cs` implementing `IPasswordHasher<ApplicationUser>` using `Konscious.Security.Cryptography.Argon2` (memory 19 MiB, iterations 2, parallelism 1, 32-byte salt + hash) per R-06
+- [X] T026 [P] Create `backend/src/Quraan.Infrastructure/Identity/ApplicationUser.cs` inheriting `IdentityUser<Guid>` with `DisplayName`, `PreferredLanguage`, `CreatedAt`, `LastSignInAt`
+- [X] T027 [P] Create `backend/src/Quraan.Infrastructure/Identity/Argon2idPasswordHasher.cs` implementing `IPasswordHasher<ApplicationUser>` using `Konscious.Security.Cryptography.Argon2` (memory 19 MiB, iterations 2, parallelism 1, 32-byte salt + hash) per R-06
 
 ### EF Core persistence
 
-- [ ] T028 Create `backend/src/Quraan.Infrastructure/Persistence/QuraanDbContext.cs` extending `IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>` with DbSets for every domain entity and `OnModelCreating` calling `ApplyConfigurationsFromAssembly(typeof(QuraanDbContext).Assembly)`
-- [ ] T029 [P] Create `backend/src/Quraan.Infrastructure/Persistence/Configurations/SurahConfiguration.cs` (PK, indexes `IX_Surah_EnglishNameNormalized`, `IX_Surah_TransliteratedName`)
-- [ ] T030 [P] Create `backend/src/Quraan.Infrastructure/Persistence/Configurations/AyahConfiguration.cs` (FK to Surah RESTRICT, unique `IX_Ayah_SurahId_NumberInSurah`, `IX_Ayah_NormalizedArabicText`)
-- [ ] T031 [P] Create `backend/src/Quraan.Infrastructure/Persistence/Configurations/TranslationConfiguration.cs` and `AyahTranslationConfiguration.cs` (composite PK + `IX_AyahTranslation_NormalizedText`)
-- [ ] T032 [P] Create `backend/src/Quraan.Infrastructure/Persistence/Configurations/TafsirSourceConfiguration.cs` and `TafsirEntryConfiguration.cs` (`UQ_TafsirEntry_Source_Ayah`)
-- [ ] T033 [P] Create `backend/src/Quraan.Infrastructure/Persistence/Configurations/ReciterConfiguration.cs`
-- [ ] T034 [P] Create `backend/src/Quraan.Infrastructure/Persistence/Configurations/RefreshTokenConfiguration.cs` (`IX_RefreshToken_UserId`, `UQ_RefreshToken_TokenHash`, soft-delete query filter)
-- [ ] T035 [P] Create `backend/src/Quraan.Infrastructure/Persistence/Configurations/BookmarkConfiguration.cs` (`UQ_Bookmark_User_Ayah` filtered on `IsDeleted = 0`, soft-delete query filter, cascade from User)
-- [ ] T036 [P] Create `backend/src/Quraan.Infrastructure/Persistence/Configurations/LastReadPositionConfiguration.cs` (PK = UserId, rowversion concurrency token, cascade)
-- [ ] T037 [P] Add SQL Server full-text catalogue migration helper `backend/src/Quraan.Infrastructure/Persistence/Migrations/FullTextCatalogue.cs` per R-05
-- [ ] T038 Generate initial migration `M001_Initial` via `dotnet ef migrations add M001_Initial -p backend/src/Quraan.Infrastructure -s backend/src/Quraan.Api` covering every entity above and producing `backend/src/Quraan.Infrastructure/Persistence/Migrations/*.cs`
+- [X] T028 Create `backend/src/Quraan.Infrastructure/Persistence/QuraanDbContext.cs` extending `IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>` with DbSets for every domain entity and `OnModelCreating` calling `ApplyConfigurationsFromAssembly(typeof(QuraanDbContext).Assembly)`
+- [X] T029 [P] Create `backend/src/Quraan.Infrastructure/Persistence/Configurations/SurahConfiguration.cs` (PK, indexes `IX_Surah_EnglishNameNormalized`, `IX_Surah_TransliteratedName`)
+- [X] T030 [P] Create `backend/src/Quraan.Infrastructure/Persistence/Configurations/AyahConfiguration.cs` (FK to Surah RESTRICT, unique `IX_Ayah_SurahId_NumberInSurah`, `IX_Ayah_NormalizedArabicText`)
+- [X] T031 [P] Create `backend/src/Quraan.Infrastructure/Persistence/Configurations/TranslationConfiguration.cs` and `AyahTranslationConfiguration.cs` (composite PK + `IX_AyahTranslation_NormalizedText`)
+- [X] T032 [P] Create `backend/src/Quraan.Infrastructure/Persistence/Configurations/TafsirSourceConfiguration.cs` and `TafsirEntryConfiguration.cs` (`UQ_TafsirEntry_Source_Ayah`)
+- [X] T033 [P] Create `backend/src/Quraan.Infrastructure/Persistence/Configurations/ReciterConfiguration.cs`
+- [X] T034 [P] Create `backend/src/Quraan.Infrastructure/Persistence/Configurations/RefreshTokenConfiguration.cs` (`IX_RefreshToken_UserId`, `UQ_RefreshToken_TokenHash`, soft-delete query filter)
+- [X] T035 [P] Create `backend/src/Quraan.Infrastructure/Persistence/Configurations/BookmarkConfiguration.cs` (`UQ_Bookmark_User_Ayah` filtered on `IsDeleted = 0`, soft-delete query filter, cascade from User)
+- [X] T036 [P] Create `backend/src/Quraan.Infrastructure/Persistence/Configurations/LastReadPositionConfiguration.cs` (PK = UserId, rowversion concurrency token, cascade)
+- [X] T037 [P] Add SQL Server full-text catalogue migration helper `backend/src/Quraan.Infrastructure/Persistence/Migrations/FullTextCatalogue.cs` per R-05
+- [X] T038 Generate initial migration `M001_Initial` via `dotnet ef migrations add M001_Initial -p backend/src/Quraan.Infrastructure -s backend/src/Quraan.Api` covering every entity above and producing `backend/src/Quraan.Infrastructure/Persistence/Migrations/*.cs`
 
 ### Repository implementations
 
-- [ ] T039 [P] Implement `backend/src/Quraan.Infrastructure/Repositories/SurahRepository.cs`, `AyahRepository.cs`, `TafsirRepository.cs` using EF projections + `AsNoTracking` (Principle VI)
-- [ ] T040 [P] Implement `backend/src/Quraan.Infrastructure/Repositories/BookmarkRepository.cs`, `LastReadRepository.cs`, `RefreshTokenRepository.cs`
+- [X] T039 [P] Implement `backend/src/Quraan.Infrastructure/Repositories/SurahRepository.cs`, `AyahRepository.cs`, `TafsirRepository.cs` using EF projections + `AsNoTracking` (Principle VI)
+- [X] T040 [P] Implement `backend/src/Quraan.Infrastructure/Repositories/BookmarkRepository.cs`, `LastReadRepository.cs`, `RefreshTokenRepository.cs`
 
 ### Application common + caching
 
-- [ ] T041 [P] Create `backend/src/Quraan.Application/Common/PageRequest.cs`, `PageResult.cs`, `Result.cs` per plan.md §Quraan.Application/Common
-- [ ] T042 [P] Create `backend/src/Quraan.Application/Caching/CacheKeyFactory.cs` (`quraan:v1:` prefix per R-07) and `ICachedReader.cs` + `CachedReader.cs` decorator wrapping `IDistributedCache` with TTL helpers (24 h content, 15 min search)
-- [ ] T043 [P] Create `backend/src/Quraan.Application/Search/ArabicNormalizer.cs` implementing the 7-step normalization pipeline per R-05 (will be consumed by both seeder and search)
+- [X] T041 [P] Create `backend/src/Quraan.Application/Common/PageRequest.cs`, `PageResult.cs`, `Result.cs` per plan.md §Quraan.Application/Common
+- [X] T042 [P] Create `backend/src/Quraan.Application/Caching/CacheKeyFactory.cs` (`quraan:v1:` prefix per R-07) and `ICachedReader.cs` + `CachedReader.cs` decorator wrapping `IDistributedCache` with TTL helpers (24 h content, 15 min search)
+- [X] T043 [P] Create `backend/src/Quraan.Application/Search/ArabicNormalizer.cs` implementing the 7-step normalization pipeline per R-05 (will be consumed by both seeder and search)
 
 ### Seeders + content integrity
 
-- [ ] T044 Pin source files under `backend/src/Quraan.Infrastructure/Seed/Sources/`: `quran-uthmani.txt`, `en.sahih.txt`, `en-tafisr-ibn-kathir.json`, and write `backend/src/Quraan.Infrastructure/Seed/Sources/expected.sha256` containing the SHA-256 of each file
-- [ ] T045 Implement `backend/src/Quraan.Infrastructure/Seed/ChecksumVerifier.cs` that recomputes SHA-256 of every `Sources/*` file and aborts on mismatch (Principle I, SC-006)
-- [ ] T046 [P] Implement `backend/src/Quraan.Infrastructure/Seed/QuranSeeder.cs` parsing `quran-uthmani.txt` + `en.sahih.txt` and inserting `Surah`, `Ayah`, `Translation`, `AyahTranslation` rows; populate `Ayah.NormalizedArabicText` via `ArabicNormalizer`
-- [ ] T047 [P] Implement `backend/src/Quraan.Infrastructure/Seed/TafsirSeeder.cs` parsing `en-tafisr-ibn-kathir.json` and inserting `TafsirSource` (id=1) + `TafsirEntry` rows
-- [ ] T048 [P] Implement `backend/src/Quraan.Infrastructure/Seed/ReciterSeeder.cs` inserting Alafasy reciter (id=1, codes per R-04)
+- [X] T044 Pin source files under `backend/src/Quraan.Infrastructure/Seed/Sources/`: `quran-uthmani.txt`, `en.sahih.txt`, `en-tafisr-ibn-kathir.json`, and write `backend/src/Quraan.Infrastructure/Seed/Sources/expected.sha256` containing the SHA-256 of each file
+- [X] T045 Implement `backend/src/Quraan.Infrastructure/Seed/ChecksumVerifier.cs` that recomputes SHA-256 of every `Sources/*` file and aborts on mismatch (Principle I, SC-006)
+- [X] T046 [P] Implement `backend/src/Quraan.Infrastructure/Seed/QuranSeeder.cs` parsing `quran-uthmani.txt` + `en.sahih.txt` and inserting `Surah`, `Ayah`, `Translation`, `AyahTranslation` rows; populate `Ayah.NormalizedArabicText` via `ArabicNormalizer`
+- [X] T047 [P] Implement `backend/src/Quraan.Infrastructure/Seed/TafsirSeeder.cs` parsing `en-tafisr-ibn-kathir.json` and inserting `TafsirSource` (id=1) + `TafsirEntry` rows
+- [X] T048 [P] Implement `backend/src/Quraan.Infrastructure/Seed/ReciterSeeder.cs` inserting Alafasy reciter (id=1, codes per R-04)
 
 ### API host + middleware + DI
 
-- [ ] T049 Configure `backend/src/Quraan.Api/Program.cs`: bind config, register `QuraanDbContext` (SQL Server), register Identity + custom Argon2id hasher, register JWT bearer (15-min access token, RFC R-06 settings), register `IDistributedCache` (Redis prod / Memory dev), register Serilog with PII-stripping enricher, register Swashbuckle, register all repositories and services via DI, add controllers, add CORS for `http://localhost:4200`, HTTPS redirection + HSTS
-- [ ] T050 [P] Implement `backend/src/Quraan.Api/Middleware/CorrelationIdMiddleware.cs` reading/issuing `X-Correlation-ID` header
-- [ ] T051 [P] Implement `backend/src/Quraan.Api/Middleware/RequestLoggingMiddleware.cs` (Serilog enrichers; never logs `Authorization` or request body for `/auth/*`)
-- [ ] T052 [P] Implement `backend/src/Quraan.Api/Middleware/ProblemDetailsExceptionHandler.cs` translating exceptions to RFC 7807 responses with `correlationId` field (Principle VII)
-- [ ] T053 [P] Implement `backend/src/Quraan.Api/Filters/ApiVersionRoute.cs` so all controllers use `[Route("api/v1/[controller]")]`
-- [ ] T054 [P] Add `backend/src/Quraan.Api/Controllers/V1/HealthController.cs` exposing `/health/live` and `/health/ready` with `AddDbContextCheck` + `AddRedis`
-- [ ] T055 [P] Add `dotnet run -- seed` and `dotnet run -- verify-content` CLI command parsing in `backend/src/Quraan.Api/Program.cs` invoking seeders and `ChecksumVerifier`
-- [ ] T055a Implement boot-time integrity gate: in `backend/src/Quraan.Api/Program.cs`, after `app.Build()` and before `app.Run()`, invoke `ChecksumVerifier.VerifyAllAsync()` against the live DB rows; on any digest mismatch log a critical event and `Environment.Exit(1)` so Kestrel never begins listening on a corrupted content store. Implements Principle I "fail closed on every read path" by transitively gating every served request.
-- [ ] T055b [P] Integration test `backend/tests/Quraan.IntegrationTests/Integrity/BootTimeIntegrityTests.cs` that spins up `WebApplicationFactory<Program>` with a deliberately-mutated Ayah row and asserts the host fails to start (Principle I + Principle III; resolves analyzer C3).
+- [X] T049 Configure `backend/src/Quraan.Api/Program.cs`: bind config, register `QuraanDbContext` (SQL Server), register Identity + custom Argon2id hasher, register JWT bearer (15-min access token, RFC R-06 settings), register `IDistributedCache` (Redis prod / Memory dev), register Serilog with PII-stripping enricher, register Swashbuckle, register all repositories and services via DI, add controllers, add CORS for `http://localhost:4200`, HTTPS redirection + HSTS
+- [X] T050 [P] Implement `backend/src/Quraan.Api/Middleware/CorrelationIdMiddleware.cs` reading/issuing `X-Correlation-ID` header
+- [X] T051 [P] Implement `backend/src/Quraan.Api/Middleware/RequestLoggingMiddleware.cs` (Serilog enrichers; never logs `Authorization` or request body for `/auth/*`)
+- [X] T052 [P] Implement `backend/src/Quraan.Api/Middleware/ProblemDetailsExceptionHandler.cs` translating exceptions to RFC 7807 responses with `correlationId` field (Principle VII)
+- [X] T053 [P] Implement `backend/src/Quraan.Api/Filters/ApiVersionRoute.cs` so all controllers use `[Route("api/v1/[controller]")]`
+- [X] T054 [P] Add `backend/src/Quraan.Api/Controllers/V1/HealthController.cs` exposing `/health/live` and `/health/ready` with `AddDbContextCheck` + `AddRedis`
+- [X] T055 [P] Add `dotnet run -- seed` and `dotnet run -- verify-content` CLI command parsing in `backend/src/Quraan.Api/Program.cs` invoking seeders and `ChecksumVerifier`
+- [X] T055a Implement boot-time integrity gate: in `backend/src/Quraan.Api/Program.cs`, after `app.Build()` and before `app.Run()`, invoke `ChecksumVerifier.VerifyAllAsync()` against the live DB rows; on any digest mismatch log a critical event and `Environment.Exit(1)` so Kestrel never begins listening on a corrupted content store. Implements Principle I "fail closed on every read path" by transitively gating every served request.
+- [X] T055b [P] Integration test `backend/tests/Quraan.IntegrationTests/Integrity/BootTimeIntegrityTests.cs` that spins up `WebApplicationFactory<Program>` with a deliberately-mutated Ayah row and asserts the host fails to start (Principle I + Principle III; resolves analyzer C3).
 
 ### OpenAPI contract generation
 
-- [ ] T056 Configure Swashbuckle in `backend/src/Quraan.Api/Program.cs` to emit OpenAPI 3.0 with bearer security scheme, then add an MSBuild `AfterBuild` target in `backend/src/Quraan.Api/Quraan.Api.csproj` running `dotnet swagger tofile --output ../../../specs/001-quran-mvp/contracts/swagger.generated.yaml`
-- [ ] T057 Add `npm run gen:api` script in `frontend/package.json` running `nswag run nswag.json`; create `frontend/nswag.json` consuming `../specs/001-quran-mvp/contracts/openapi.yaml` and emitting `frontend/src/app/api/quraan-api.client.ts` per R-10
+- [X] T056 Configure Swashbuckle in `backend/src/Quraan.Api/Program.cs` to emit OpenAPI 3.0 with bearer security scheme, then add an MSBuild `AfterBuild` target in `backend/src/Quraan.Api/Quraan.Api.csproj` running `dotnet swagger tofile --output ../../../specs/001-quran-mvp/contracts/swagger.generated.yaml`
+- [X] T057 Add `npm run gen:api` script in `frontend/package.json` running `nswag run nswag.json`; create `frontend/nswag.json` consuming `../specs/001-quran-mvp/contracts/openapi.yaml` and emitting `frontend/src/app/api/quraan-api.client.ts` per R-10
 
 ### Frontend shell
 
-- [ ] T058 Configure `frontend/src/app/app.config.ts` with `provideRouter`, `provideHttpClient(withInterceptors([...]))`, `provideAnimations()`, `TranslateModule.forRoot` with HTTP loader pointing to `assets/i18n/`
-- [ ] T059 [P] Implement `frontend/src/app/core/i18n/language.service.ts` exposing `currentLang$: BehaviorSubject<'ar'|'en'>` and `setLanguage(lang)` writing to `localStorage` (R-08); default per `navigator.language`
-- [ ] T060 [P] Implement `frontend/src/app/core/i18n/rtl.service.ts` subscribing to `language.service` and toggling `document.documentElement.dir`
-- [ ] T061 [P] Stub `frontend/src/assets/i18n/ar.json` and `frontend/src/assets/i18n/en.json` with shell keys (`app.title`, `nav.surahs`, `nav.search`, `nav.bookmarks`, `nav.signin`, `common.loading`, `common.retry`)
-- [ ] T062 [P] Implement `frontend/src/app/core/http/auth.interceptor.ts` attaching `Authorization: Bearer` from a `TokenStore` and triggering `/auth/refresh` on 401
-- [ ] T063 [P] Implement `frontend/src/app/core/http/correlation-id.interceptor.ts` and `frontend/src/app/core/http/problem-details.interceptor.ts` parsing RFC 7807 bodies into a typed `ApiError`
-- [ ] T064 [P] Set up `frontend/src/styles/_tokens.scss` (WCAG-AA contrast tokens) and `frontend/src/styles/_rtl.scss` (logical-property utilities) referenced from `frontend/src/styles.scss`
-- [ ] T065 [P] Add KFGQPC Uthmanic Hafs font files to `frontend/src/assets/fonts/` and `@font-face` declaration in `frontend/src/styles/_typography.scss`
-- [ ] T066 [P] Configure `frontend/src/app/app.routes.ts` with empty `loadChildren` lazy routes for `quran`, `search`, `tafsir`, `audio`, `bookmarks`, `auth`, `home` features
-- [ ] T067 [P] Add `frontend/tools/check-contrast.mjs` Node script asserting AA ratios in `_tokens.scss` (CI gate per R-11)
+- [X] T058 Configure `frontend/src/app/app.config.ts` with `provideRouter`, `provideHttpClient(withInterceptors([...]))`, `provideAnimations()`, `TranslateModule.forRoot` with HTTP loader pointing to `assets/i18n/`
+- [X] T059 [P] Implement `frontend/src/app/core/i18n/language.service.ts` exposing `currentLang$: BehaviorSubject<'ar'|'en'>` and `setLanguage(lang)` writing to `localStorage` (R-08); default per `navigator.language`
+- [X] T060 [P] Implement `frontend/src/app/core/i18n/rtl.service.ts` subscribing to `language.service` and toggling `document.documentElement.dir`
+- [X] T061 [P] Stub `frontend/src/assets/i18n/ar.json` and `frontend/src/assets/i18n/en.json` with shell keys (`app.title`, `nav.surahs`, `nav.search`, `nav.bookmarks`, `nav.signin`, `common.loading`, `common.retry`)
+- [X] T062 [P] Implement `frontend/src/app/core/http/auth.interceptor.ts` attaching `Authorization: Bearer` from a `TokenStore` and triggering `/auth/refresh` on 401
+- [X] T063 [P] Implement `frontend/src/app/core/http/correlation-id.interceptor.ts` and `frontend/src/app/core/http/problem-details.interceptor.ts` parsing RFC 7807 bodies into a typed `ApiError`
+- [X] T064 [P] Set up `frontend/src/styles/_tokens.scss` (WCAG-AA contrast tokens) and `frontend/src/styles/_rtl.scss` (logical-property utilities) referenced from `frontend/src/styles.scss`
+- [X] T065 [P] Add KFGQPC Uthmanic Hafs font files to `frontend/src/assets/fonts/` and `@font-face` declaration in `frontend/src/styles/_typography.scss`
+- [X] T066 [P] Configure `frontend/src/app/app.routes.ts` with empty `loadChildren` lazy routes for `quran`, `search`, `tafsir`, `audio`, `bookmarks`, `auth`, `home` features
+- [X] T067 [P] Add `frontend/tools/check-contrast.mjs` Node script asserting AA ratios in `_tokens.scss` (CI gate per R-11)
 
 ### Foundational tests
 
-- [ ] T068 [P] Add `backend/tests/Quraan.IntegrationTests/Fixtures/SqlServerFixture.cs` using `Testcontainers.MsSql` and `WebApplicationFactory<Program>` with seeded test data (Principle III: real DB, never InMemory)
-- [ ] T069 [P] Add `backend/tests/Quraan.ContractTests/OpenApiSnapshotTests.cs` using Verify.Xunit to compare runtime-generated swagger against `specs/001-quran-mvp/contracts/openapi.yaml`
-- [ ] T070 [P] Add `backend/tests/Quraan.UnitTests/Search/ArabicNormalizerTests.cs` covering all 7 normalization rules per R-05
-- [ ] T071 [P] Add `backend/tests/Quraan.IntegrationTests/Seed/SeederTests.cs` asserting 114 Surahs, 6,236 Ayahs, ≥6,000 TafsirEntries, and `ChecksumVerifier.Verify()` passes (SC-006)
-- [ ] T071a [P] Contract test `backend/tests/Quraan.ContractTests/HealthContractTests.cs` covering `GET /api/v1/health/live` (200) and `GET /api/v1/health/ready` (200 happy / 503 when DbContextCheck or RedisCheck fails), snapshotted against `specs/001-quran-mvp/contracts/openapi.yaml` (Principle III non-negotiable; resolves analyzer C1).
+- [X] T068 [P] Add `backend/tests/Quraan.IntegrationTests/Fixtures/SqlServerFixture.cs` using `Testcontainers.MsSql` and `WebApplicationFactory<Program>` with seeded test data (Principle III: real DB, never InMemory)
+- [X] T069 [P] Add `backend/tests/Quraan.ContractTests/OpenApiSnapshotTests.cs` using Verify.Xunit to compare runtime-generated swagger against `specs/001-quran-mvp/contracts/openapi.yaml`
+- [X] T070 [P] Add `backend/tests/Quraan.UnitTests/Search/ArabicNormalizerTests.cs` covering all 7 normalization rules per R-05
+- [X] T071 [P] Add `backend/tests/Quraan.IntegrationTests/Seed/SeederTests.cs` asserting 114 Surahs, 6,236 Ayahs, ≥6,000 TafsirEntries, and `ChecksumVerifier.Verify()` passes (SC-006)
+- [X] T071a [P] Contract test `backend/tests/Quraan.ContractTests/HealthContractTests.cs` covering `GET /api/v1/health/live` (200) and `GET /api/v1/health/ready` (200 happy / 503 when DbContextCheck or RedisCheck fails), snapshotted against `specs/001-quran-mvp/contracts/openapi.yaml` (Principle III non-negotiable; resolves analyzer C1).
 
 **Checkpoint**: `dotnet test` (all 3 suites) green. `npm test` green. `dotnet run -- seed` populates a clean DB. User-story phases may now begin in parallel.
 
@@ -150,29 +150,29 @@ description: "Task list for 001-quran-mvp implementation"
 
 ### Tests for User Story 1
 
-- [ ] T072 [P] [US1] Contract test for `GET /surahs` and `GET /surahs/{id}` matching `specs/001-quran-mvp/contracts/openapi.yaml` schemas in `backend/tests/Quraan.ContractTests/SurahsContractTests.cs`
-- [ ] T073 [P] [US1] Integration test for Surah list (`GET /api/v1/surahs` returns 114 items, ordered, with `arabicName`/`transliteratedName`/`englishName`/`revelationPlace`/`ayahCount`) in `backend/tests/Quraan.IntegrationTests/Surahs/SurahsListTests.cs`
-- [ ] T074 [P] [US1] Integration test for Al-Fatiha detail (`GET /api/v1/surahs/1?translation=en.sahih` returns 7 Ayahs with Arabic + translation + attribution) in `backend/tests/Quraan.IntegrationTests/Surahs/SurahDetailTests.cs`
-- [ ] T075 [P] [US1] Integration test for `GET /api/v1/surahs/115` returns 404 ProblemDetails in `backend/tests/Quraan.IntegrationTests/Surahs/SurahNotFoundTests.cs`
-- [ ] T076 [P] [US1] Unit test `backend/tests/Quraan.UnitTests/Surahs/SurahServiceTests.cs` (Moq for `ISurahRepository` + `ICachedReader`)
-- [ ] T077 [P] [US1] Frontend unit test `frontend/src/app/features/quran/surah-list.page.spec.ts` (Jasmine) verifying the list renders 114 mocked items and binds Arabic + English names
-- [ ] T078 [P] [US1] Frontend unit test `frontend/src/app/features/quran/surah-reader.page.spec.ts` verifying jump-to-Ayah scrolls and prev/next navigation triggers route change
-- [ ] T079 [P] [US1] Playwright e2e `frontend/tests/e2e/us1-read-quran.spec.ts` covering the four scenarios from spec.md US1; throttle the page context to the `Slow 3G` profile per spec.md §Network performance baseline; assert the translation `<span>` renders with `lang="en"` while sibling Arabic text renders with `lang="ar"` and the `mushaf-font` class regardless of UI locale (FR-009 verification); end with axe-core scan.
+- [X] T072 [P] [US1] Contract test for `GET /surahs` and `GET /surahs/{id}` matching `specs/001-quran-mvp/contracts/openapi.yaml` schemas in `backend/tests/Quraan.ContractTests/SurahsContractTests.cs`
+- [X] T073 [P] [US1] Integration test for Surah list (`GET /api/v1/surahs` returns 114 items, ordered, with `arabicName`/`transliteratedName`/`englishName`/`revelationPlace`/`ayahCount`) in `backend/tests/Quraan.IntegrationTests/Surahs/SurahsListTests.cs`
+- [X] T074 [P] [US1] Integration test for Al-Fatiha detail (`GET /api/v1/surahs/1?translation=en.sahih` returns 7 Ayahs with Arabic + translation + attribution) in `backend/tests/Quraan.IntegrationTests/Surahs/SurahDetailTests.cs`
+- [X] T075 [P] [US1] Integration test for `GET /api/v1/surahs/115` returns 404 ProblemDetails in `backend/tests/Quraan.IntegrationTests/Surahs/SurahNotFoundTests.cs`
+- [X] T076 [P] [US1] Unit test `backend/tests/Quraan.UnitTests/Surahs/SurahServiceTests.cs` (Moq for `ISurahRepository` + `ICachedReader`)
+- [X] T077 [P] [US1] Frontend unit test `frontend/src/app/features/quran/surah-list.page.spec.ts` (Jasmine) verifying the list renders 114 mocked items and binds Arabic + English names
+- [X] T078 [P] [US1] Frontend unit test `frontend/src/app/features/quran/surah-reader.page.spec.ts` verifying jump-to-Ayah scrolls and prev/next navigation triggers route change
+- [X] T079 [P] [US1] Playwright e2e `frontend/tests/e2e/us1-read-quran.spec.ts` covering the four scenarios from spec.md US1; throttle the page context to the `Slow 3G` profile per spec.md §Network performance baseline; assert the translation `<span>` renders with `lang="en"` while sibling Arabic text renders with `lang="ar"` and the `mushaf-font` class regardless of UI locale (FR-009 verification); end with axe-core scan.
 
 ### Implementation for User Story 1
 
-- [ ] T080 [P] [US1] Create DTOs `backend/src/Quraan.Application/Surahs/SurahSummaryDto.cs`, `SurahDetailDto.cs`, `AyahDto.cs`, `TranslationInfoDto.cs` matching `SurahSummary`/`SurahDetail`/`Ayah`/`TranslationInfo` schemas
-- [ ] T081 [US1] Implement `backend/src/Quraan.Application/Surahs/SurahService.cs` with `GetAllAsync()` and `GetByIdAsync(int, string translation)` returning DTOs via `ICachedReader` (24-h TTL)
-- [ ] T082 [US1] Implement `backend/src/Quraan.Application/Ayahs/AyahService.cs` with `GetAsync(int surahId, int numberInSurah, string translation)` for `GET /surahs/{id}/ayahs/{n}`
-- [ ] T083 [US1] Implement `backend/src/Quraan.Api/Controllers/V1/SurahsController.cs` exposing `GET /api/v1/surahs` and `GET /api/v1/surahs/{surahId}` per OpenAPI; thin pass-through to `SurahService`
-- [ ] T084 [US1] Implement `backend/src/Quraan.Api/Controllers/V1/AyahsController.cs` exposing `GET /api/v1/surahs/{surahId}/ayahs/{numberInSurah}`
-- [ ] T085 [P] [US1] Create Angular feature module entry `frontend/src/app/features/quran/quran.routes.ts` with two lazy routes (`''` → SurahListPage, `':surahId'` → SurahReaderPage)
-- [ ] T086 [P] [US1] Implement `frontend/src/app/features/quran/quran-api.service.ts` wrapping the generated `QuraanApiClient` for `getSurahs()`/`getSurah(id, translation)`/`getAyah(...)`
-- [ ] T087 [P] [US1] Implement `frontend/src/app/features/quran/surah-list.page.ts` + `.html` + `.scss` rendering 114 Surahs with Arabic + transliterated + English names + Ayah count, mobile-first responsive, KFGQPC font for Arabic
-- [ ] T088 [US1] Implement `frontend/src/app/features/quran/ayah.component.ts` (presentational) showing Arabic Uthmani + English translation in a two-column layout that flips with `dir`
-- [ ] T089 [US1] Implement `frontend/src/app/features/quran/surah-reader.page.ts` rendering Surah header (Arabic + transliterated + English name, revelation place, Ayah count), prev/next navigation buttons, jump-to-Ayah input, and a virtualized list of `AyahComponent` via `ngx-virtual-scroller`
-- [ ] T090 [US1] Implement `frontend/src/app/features/home/home.page.ts` with a "Surahs" link as the entry point (Continue-Reading affordance is added in Polish — T140)
-- [ ] T091 [US1] Wire `frontend/src/app/app.routes.ts` to load the `home` route at `''` and the `quran` feature at `surahs`; update `frontend/src/assets/i18n/{ar,en}.json` with US1 keys (`surahList.title`, `reader.next`, `reader.previous`, `reader.jumpToAyah`, `surah.revelationPlace.meccan`, `surah.revelationPlace.medinan`)
+- [X] T080 [P] [US1] Create DTOs `backend/src/Quraan.Application/Surahs/SurahSummaryDto.cs`, `SurahDetailDto.cs`, `AyahDto.cs`, `TranslationInfoDto.cs` matching `SurahSummary`/`SurahDetail`/`Ayah`/`TranslationInfo` schemas
+- [X] T081 [US1] Implement `backend/src/Quraan.Application/Surahs/SurahService.cs` with `GetAllAsync()` and `GetByIdAsync(int, string translation)` returning DTOs via `ICachedReader` (24-h TTL)
+- [X] T082 [US1] Implement `backend/src/Quraan.Application/Ayahs/AyahService.cs` with `GetAsync(int surahId, int numberInSurah, string translation)` for `GET /surahs/{id}/ayahs/{n}`
+- [X] T083 [US1] Implement `backend/src/Quraan.Api/Controllers/V1/SurahsController.cs` exposing `GET /api/v1/surahs` and `GET /api/v1/surahs/{surahId}` per OpenAPI; thin pass-through to `SurahService`
+- [X] T084 [US1] Implement `backend/src/Quraan.Api/Controllers/V1/AyahsController.cs` exposing `GET /api/v1/surahs/{surahId}/ayahs/{numberInSurah}`
+- [X] T085 [P] [US1] Create Angular feature module entry `frontend/src/app/features/quran/quran.routes.ts` with two lazy routes (`''` → SurahListPage, `':surahId'` → SurahReaderPage)
+- [X] T086 [P] [US1] Implement `frontend/src/app/features/quran/quran-api.service.ts` wrapping the generated `QuraanApiClient` for `getSurahs()`/`getSurah(id, translation)`/`getAyah(...)`
+- [X] T087 [P] [US1] Implement `frontend/src/app/features/quran/surah-list.page.ts` + `.html` + `.scss` rendering 114 Surahs with Arabic + transliterated + English names + Ayah count, mobile-first responsive, KFGQPC font for Arabic
+- [X] T088 [US1] Implement `frontend/src/app/features/quran/ayah.component.ts` (presentational) showing Arabic Uthmani + English translation in a two-column layout that flips with `dir`
+- [X] T089 [US1] Implement `frontend/src/app/features/quran/surah-reader.page.ts` rendering Surah header (Arabic + transliterated + English name, revelation place, Ayah count), prev/next navigation buttons, jump-to-Ayah input, and a virtualized list of `AyahComponent` via `@angular/cdk/scrolling` (per Phase 1 deviation note on T008)
+- [X] T090 [US1] Implement `frontend/src/app/features/home/home.page.ts` with a "Surahs" link as the entry point (Continue-Reading affordance is added in Polish — T140)
+- [X] T091 [US1] Wire `frontend/src/app/app.routes.ts` to load the `home` route at `''` and the `quran` feature at `surahs`; update `frontend/src/assets/i18n/{ar,en}.json` with US1 keys (`surahList.title`, `reader.next`, `reader.previous`, `reader.jumpToAyah`, `surah.revelationPlace.meccan`, `surah.revelationPlace.medinan`)
 
 **Checkpoint**: SC-001 verified (Surah open under 1 s on cached reads), SC-006 verified (Ayah text matches `expected.sha256`), all US1 acceptance scenarios pass.
 

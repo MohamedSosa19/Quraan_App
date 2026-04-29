@@ -1,0 +1,23 @@
+// Mushaf font — KFGQPC Uthmanic Hafs (Constitution IV).
+// Drop the licensed font files into src/assets/fonts/ before building for
+// distribution. Until they're present, the @font-face below silently falls
+// back to the system Arabic font so dev still works.
+
+@font-face {
+  font-family: 'KFGQPC Uthmanic Hafs';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/assets/fonts/UthmanicHafs.woff2') format('woff2'),
+       url('/assets/fonts/UthmanicHafs.woff') format('woff');
+}
+
+.mushaf-font {
+  font-family: var(--font-arabic);
+  line-height: 2.1;
+  letter-spacing: 0;
+}
+
+.ui-font {
+  font-family: var(--font-ui);
+}

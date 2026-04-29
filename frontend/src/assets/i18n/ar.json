@@ -1,0 +1,40 @@
+{
+  "app": {
+    "title": "تطبيق القرآن"
+  },
+  "nav": {
+    "surahs": "السور",
+    "search": "البحث",
+    "bookmarks": "المرجعيات",
+    "signin": "تسجيل الدخول"
+  },
+  "common": {
+    "loading": "جارٍ التحميل…",
+    "retry": "إعادة المحاولة"
+  },
+  "home": {
+    "title": "اقرأ القرآن الكريم",
+    "subtitle": "تصفح السور المئة وأربعة عشر مع الترجمة الإنجليزية",
+    "openSurahs": "افتح السور"
+  },
+  "surahList": {
+    "title": "السور",
+    "ayahCount": "{{count}} آية",
+    "loadFailed": "تعذّر تحميل السور."
+  },
+  "reader": {
+    "next": "السورة التالية",
+    "previous": "السورة السابقة",
+    "jumpToAyah": "انتقل إلى آية",
+    "jumpToAyahPlaceholder": "رقم الآية",
+    "go": "اذهب",
+    "ayahCount": "{{count}} آية",
+    "translationAttribution": "الترجمة: {{name}}"
+  },
+  "surah": {
+    "revelationPlace": {
+      "Meccan": "مكية",
+      "Medinan": "مدنية"
+    }
+  }
+}

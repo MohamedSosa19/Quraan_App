@@ -1,0 +1,40 @@
+{
+  "app": {
+    "title": "Quraan App"
+  },
+  "nav": {
+    "surahs": "Surahs",
+    "search": "Search",
+    "bookmarks": "Bookmarks",
+    "signin": "Sign in"
+  },
+  "common": {
+    "loading": "Loading…",
+    "retry": "Retry"
+  },
+  "home": {
+    "title": "Read the Quran",
+    "subtitle": "Browse all 114 Surahs with English translation",
+    "openSurahs": "Open Surahs"
+  },
+  "surahList": {
+    "title": "Surahs",
+    "ayahCount": "{{count}} ayahs",
+    "loadFailed": "Could not load Surahs."
+  },
+  "reader": {
+    "next": "Next Surah",
+    "previous": "Previous Surah",
+    "jumpToAyah": "Jump to ayah",
+    "jumpToAyahPlaceholder": "Ayah number",
+    "go": "Go",
+    "ayahCount": "{{count}} ayahs",
+    "translationAttribution": "Translation: {{name}}"
+  },
+  "surah": {
+    "revelationPlace": {
+      "Meccan": "Meccan",
+      "Medinan": "Medinan"
+    }
+  }
+}

@@ -1,1 +1,18 @@
-/* You can add global styles to this file, and also import other style files */
+@use './styles/tokens';
+@use './styles/typography';
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-ui);
+}
+
+body {
+  min-block-size: 100vh;
+}
+
+a {
+  color: var(--color-link);
+}

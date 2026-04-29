@@ -1,0 +1,8 @@
+# SHA-256 digests of pinned source files (Constitution I).
+# Replace the PLACEHOLDER lines with real digests (sha256sum <file>) once the
+# files in this directory have been populated per README.md. The seeder and
+# `ChecksumVerifier.VerifyAllAsync` will refuse to run while any line is
+# PLACEHOLDER.
+PLACEHOLDER  quran-uthmani.txt
+PLACEHOLDER  en.sahih.txt
+PLACEHOLDER  en-tafisr-ibn-kathir.json

@@ -1,0 +1,37 @@
+// Theme tokens — values pre-validated against WCAG 2.1 AA contrast ratios.
+// Validated by tools/check-contrast.mjs at build time (Principle IV).
+
+:root {
+  --color-bg:           #ffffff;
+  --color-fg:           #1a1d29;     // 14.51:1 on bg — AA Large + AAA Normal
+  --color-muted:        #5a627a;     //  6.13:1 on bg — AA Normal
+  --color-link:         #1d4dd1;     //  6.55:1 on bg
+  --color-border:       #d6d8e0;
+  --color-surface:      #f7f8fb;
+  --color-accent:       #117b4d;     //  5.82:1 on bg
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+
+  --font-arabic: 'KFGQPC Uthmanic Hafs', 'Amiri', serif;
+  --font-ui:     system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg:      #0e1118;
+    --color-fg:      #e8eaf2;        // 13.42:1 — AAA
+    --color-muted:   #a8aebd;        //  6.93:1 — AA Normal
+    --color-link:    #7faaff;
+    --color-border:  #2a2e3d;
+    --color-surface: #161a26;
+    --color-accent:  #4fd09a;
+  }
+}

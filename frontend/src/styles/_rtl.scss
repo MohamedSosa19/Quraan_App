@@ -1,0 +1,23 @@
+// Logical-property utilities (Principle IV). Stylelint rule
+// `csstools/use-logical` enforces these in feature SCSS — no per-side
+// overrides.
+
+@mixin inline-padding($value) {
+  padding-inline-start: $value;
+  padding-inline-end: $value;
+}
+
+@mixin inline-margin($value) {
+  margin-inline-start: $value;
+  margin-inline-end: $value;
+}
+
+@mixin block-padding($value) {
+  padding-block-start: $value;
+  padding-block-end: $value;
+}
+
+@mixin block-margin($value) {
+  margin-block-start: $value;
+  margin-block-end: $value;
+}
