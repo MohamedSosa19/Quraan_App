@@ -46,5 +46,21 @@
     "error": {
       "unreachable": "Audio source unavailable. Please check your connection."
     }
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "Search Surahs and Ayahs",
+    "noResults": "No matches for \"{{q}}\".",
+    "surahMatches": "Surahs",
+    "ayahMatches": "Ayahs",
+    "totalAyahMatches": "{{count}} ayah results",
+    "matchedIn": {
+      "arabic": "Arabic",
+      "translation": "Translation"
+    },
+    "next": "Next page",
+    "previous": "Previous page",
+    "page": "Page {{page}}",
+    "loadFailed": "Search failed. Please try again."
   }
 }

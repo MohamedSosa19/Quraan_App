@@ -1,0 +1,91 @@
+<section class="search">
+  <h1>{{ 'search.title' | translate }}</h1>
+
+  <input
+    type="search"
+    class="search__input"
+    data-testid="search-input"
+    [placeholder]="'search.placeholder' | translate"
+    [ngModel]="query()"
+    (ngModelChange)="onQueryChange($event)"
+    aria-label="{{ 'search.placeholder' | translate }}"
+  />
+
+  @if (loading()) {
+    <p class="status">{{ 'common.loading' | translate }}</p>
+  }
+
+  @if (error() && !loading()) {
+    <p class="status status--error">{{ 'search.loadFailed' | translate }}</p>
+  }
+
+  @if (noResults()) {
+    <p class="status" data-testid="search-no-results">
+      {{ 'search.noResults' | translate: { q: query() } }}
+    </p>
+  }
+
+  @if (response(); as r) {
+    @if (r.surahMatches.length > 0) {
+      <section class="search__section" data-testid="search-surah-matches">
+        <h2>{{ 'search.surahMatches' | translate }}</h2>
+        <ul>
+          @for (s of r.surahMatches; track s.id) {
+            <li>
+              <a [routerLink]="['/surahs', s.id]" class="search__surah-link">
+                <span class="mushaf-font" lang="ar" dir="rtl">{{ s.arabicName }}</span>
+                <span class="search__name">{{ s.transliteratedName }} — {{ s.englishName }}</span>
+              </a>
+            </li>
+          }
+        </ul>
+      </section>
+    }
+
+    @if (r.ayahMatches.length > 0) {
+      <section class="search__section" data-testid="search-ayah-matches">
+        <h2>{{ 'search.ayahMatches' | translate }}</h2>
+        <p class="search__total">
+          {{ 'search.totalAyahMatches' | translate: { count: r.totalAyahMatches } }}
+        </p>
+        <ul>
+          @for (m of r.ayahMatches; track m.id) {
+            <li>
+              <button
+                type="button"
+                class="search__ayah-button"
+                data-testid="search-ayah-result"
+                (click)="goToAyah(m.surahId, m.numberInSurah)"
+              >
+                <span class="search__locator">{{ m.surahId }}:{{ m.numberInSurah }}</span>
+                <span class="search__matched-in">
+                  {{ ('search.matchedIn.' + m.matchedIn) | translate }}
+                </span>
+                <span
+                  class="search__snippet"
+                  [class.mushaf-font]="m.matchedIn === 'arabic'"
+                  [attr.lang]="m.matchedIn === 'arabic' ? 'ar' : 'en'"
+                  [attr.dir]="m.matchedIn === 'arabic' ? 'rtl' : 'ltr'"
+                >
+                  {{ m.highlightSnippet }}
+                </span>
+              </button>
+            </li>
+          }
+        </ul>
+
+        @if (totalPages() > 1) {
+          <nav class="search__pagination" aria-label="Search pagination">
+            <button type="button" (click)="prevPage()" [disabled]="page() === 1">
+              {{ 'search.previous' | translate }}
+            </button>
+            <span>{{ 'search.page' | translate: { page: page() } }}</span>
+            <button type="button" (click)="nextPage()" [disabled]="page() === totalPages()">
+              {{ 'search.next' | translate }}
+            </button>
+          </nav>
+        }
+      </section>
+    }
+  }
+</section>

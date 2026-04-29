@@ -245,21 +245,21 @@ description: "Task list for 001-quran-mvp implementation"
 
 ### Tests for User Story 4
 
-- [ ] T119 [P] [US4] Contract test for `GET /search` matching `SearchResponse` schema in `backend/tests/Quraan.ContractTests/SearchContractTests.cs`
-- [ ] T120 [P] [US4] Integration test `backend/tests/Quraan.IntegrationTests/Search/SearchServiceTests.cs` covering: `q=mercy` returns Ayah hits with `matchedIn=translation` + highlight snippet; `q=Yaseen` returns Surah Ya-Sin; `q=الرحمن` (no diacritics) matches `الرَّحْمَٰنِ` per FR-017; `q=qwertyuiop` returns empty arrays + `totalAyahMatches=0`; pagination respects `pageSize` cap of 100
-- [ ] T121 [P] [US4] Unit test `backend/tests/Quraan.UnitTests/Search/SearchServiceTests.cs` for ranking, English lowercasing, query trimming, and 1-char min length validation
-- [ ] T122 [P] [US4] Frontend unit test `frontend/src/app/features/search/search.page.spec.ts` covering empty-state, no-results message, and result-click navigation
-- [ ] T123 [P] [US4] Playwright e2e `frontend/tests/e2e/us4-search.spec.ts` covering all six queries from US4 acceptance scenarios
+- [X] T119 [P] [US4] Contract test for `GET /search` matching `SearchResponse` schema in `backend/tests/Quraan.ContractTests/SearchContractTests.cs`
+- [X] T120 [P] [US4] Integration test `backend/tests/Quraan.IntegrationTests/Search/SearchServiceTests.cs` covering: `q=mercy` returns Ayah hits with `matchedIn=translation` + highlight snippet; `q=Yaseen` returns Surah Ya-Sin; `q=الرحمن` (no diacritics) matches `الرَّحْمَٰنِ` per FR-017; `q=qwertyuiop` returns empty arrays + `totalAyahMatches=0`; pagination respects `pageSize` cap of 100
+- [X] T121 [P] [US4] Unit test `backend/tests/Quraan.UnitTests/Search/SearchServiceTests.cs` for ranking, English lowercasing, query trimming, and 1-char min length validation
+- [X] T122 [P] [US4] Frontend unit test `frontend/src/app/features/search/search.page.spec.ts` covering empty-state, no-results message, and result-click navigation
+- [X] T123 [P] [US4] Playwright e2e `frontend/tests/e2e/us4-search.spec.ts` covering all six queries from US4 acceptance scenarios
 
 ### Implementation for User Story 4
 
-- [ ] T124 [P] [US4] Create DTOs `backend/src/Quraan.Application/Search/SearchResponseDto.cs`, `AyahMatchDto.cs` matching OpenAPI `SearchResponse`/`AyahMatch`
-- [ ] T125 [US4] Implement `backend/src/Quraan.Application/Search/SearchService.cs`: normalize the query, run a `LIKE %normalized%` against `Surah.EnglishNameNormalized` + `Surah.TransliteratedName` (Surah matches), `Ayah.NormalizedArabicText` (Arabic Ayah matches → `matchedIn=arabic`), `AyahTranslation.NormalizedText` (English Ayah matches → `matchedIn=translation`); produce `highlightSnippet` (60 chars centered on match); cache via `ICachedReader` for 15 min (R-07)
-- [ ] T126 [US4] Implement `backend/src/Quraan.Api/Controllers/V1/SearchController.cs` exposing `GET /api/v1/search?q=&page=&pageSize=&translation=` enforcing `pageSize ≤ 100`, returning 400 ProblemDetails for empty `q`
-- [ ] T127 [P] [US4] Implement `frontend/src/app/features/search/search.routes.ts` with one lazy `SearchPage` route at `''`
-- [ ] T128 [P] [US4] Implement `frontend/src/app/features/search/search.page.ts` + `.html` + `.scss` with debounced input (300 ms), separate Surah-matches and Ayah-matches sections, no-results message, paginated Ayah-matches list
-- [ ] T129 [US4] Wire result clicks to navigate to `/surahs/{surahId}` and `surah-reader.page.ts` reads `?ayah={n}` query param to scroll-to-Ayah (extending T089)
-- [ ] T130 [US4] Add US4 keys to `frontend/src/assets/i18n/{ar,en}.json` (`search.placeholder`, `search.noResults`, `search.surahMatches`, `search.ayahMatches`, `search.matchedIn.arabic`, `search.matchedIn.translation`)
+- [X] T124 [P] [US4] Create DTOs `backend/src/Quraan.Application/Search/SearchResponseDto.cs`, `AyahMatchDto.cs` matching OpenAPI `SearchResponse`/`AyahMatch`
+- [X] T125 [US4] Implement `backend/src/Quraan.Application/Search/SearchService.cs`: normalize the query, run a `LIKE %normalized%` against `Surah.EnglishNameNormalized` + `Surah.TransliteratedName` (Surah matches), `Ayah.NormalizedArabicText` (Arabic Ayah matches → `matchedIn=arabic`), `AyahTranslation.NormalizedText` (English Ayah matches → `matchedIn=translation`); produce `highlightSnippet` (60 chars centered on match); cache via `ICachedReader` for 15 min (R-07)
+- [X] T126 [US4] Implement `backend/src/Quraan.Api/Controllers/V1/SearchController.cs` exposing `GET /api/v1/search?q=&page=&pageSize=&translation=` enforcing `pageSize ≤ 100`, returning 400 ProblemDetails for empty `q`
+- [X] T127 [P] [US4] Implement `frontend/src/app/features/search/search.routes.ts` with one lazy `SearchPage` route at `''`
+- [X] T128 [P] [US4] Implement `frontend/src/app/features/search/search.page.ts` + `.html` + `.scss` with debounced input (300 ms), separate Surah-matches and Ayah-matches sections, no-results message, paginated Ayah-matches list
+- [X] T129 [US4] Wire result clicks to navigate to `/surahs/{surahId}` and `surah-reader.page.ts` reads `?ayah={n}` query param to scroll-to-Ayah (extending T089)
+- [X] T130 [US4] Add US4 keys to `frontend/src/assets/i18n/{ar,en}.json` (`search.placeholder`, `search.noResults`, `search.surahMatches`, `search.ayahMatches`, `search.matchedIn.arabic`, `search.matchedIn.translation`)
 
 **Checkpoint**: SC-002 verified (95% of queries return results in under 1 s) — measure on Integration tests.
 

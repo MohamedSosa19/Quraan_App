@@ -143,7 +143,7 @@ public static class TestDataSeeder
             ("الأحزاب","Al-Ahzab","The Combined Forces",RevelationPlace.Medinan,73),
             ("سبأ","Saba","Sheba",RevelationPlace.Meccan,54),
             ("فاطر","Fatir","Originator",RevelationPlace.Meccan,45),
-            ("يس","Ya-Sin","Ya Sin",RevelationPlace.Meccan,83),
+            ("يس","Ya-Sin","Ya Sin (Yaseen)",RevelationPlace.Meccan,83),
             ("الصافات","As-Saffat","Those who set the Ranks",RevelationPlace.Meccan,182),
             ("ص","Sad","The Letter Saad",RevelationPlace.Meccan,88),
             ("الزمر","Az-Zumar","The Troops",RevelationPlace.Meccan,75),

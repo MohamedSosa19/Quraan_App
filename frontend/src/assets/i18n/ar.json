@@ -46,5 +46,21 @@
     "error": {
       "unreachable": "تعذّر الوصول إلى مصدر الصوت. يرجى التحقق من الاتصال."
     }
+  },
+  "search": {
+    "title": "بحث",
+    "placeholder": "ابحث في السور والآيات",
+    "noResults": "لا توجد نتائج لـ \"{{q}}\".",
+    "surahMatches": "السور",
+    "ayahMatches": "الآيات",
+    "totalAyahMatches": "{{count}} نتيجة آية",
+    "matchedIn": {
+      "arabic": "عربي",
+      "translation": "ترجمة"
+    },
+    "next": "الصفحة التالية",
+    "previous": "الصفحة السابقة",
+    "page": "الصفحة {{page}}",
+    "loadFailed": "فشل البحث. يرجى المحاولة مرة أخرى."
   }
 }

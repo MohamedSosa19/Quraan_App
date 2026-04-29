@@ -53,4 +53,12 @@ public sealed class AyahRepository : IAyahRepository
             .Where(t => t.TranslationId == translationId && EF.Functions.Like(t.NormalizedText, pattern))
             .CountAsync(ct);
     }
+
+    public Task<int> CountArabicSearchAsync(string normalizedQuery, CancellationToken ct = default)
+    {
+        var pattern = $"%{normalizedQuery}%";
+        return _db.Ayahs.AsNoTracking()
+            .Where(a => EF.Functions.Like(a.NormalizedArabicText, pattern))
+            .CountAsync(ct);
+    }
 }
