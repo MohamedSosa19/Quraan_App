@@ -9,6 +9,14 @@ bookmarks, optional JWT-based authentication, and dynamic Arabic/English UI
 toggle with RTL support. Out of scope: Hadith, Azkar, Madhahib, full offline mode,
 multiple Tafsir sources, Elasticsearch.
 
+## Clarifications
+
+### Session 2026-04-27
+
+- Q: Failed-login protection mechanism? → A: Account lockout (5 consecutive failed
+  sign-ins → locked 15 minutes) + IP rate limit (10 sign-in attempts per minute
+  per source IP).
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Read the Quran in Arabic with English Translation (Priority: P1)
@@ -196,6 +204,16 @@ the browser, confirm still signed in. Sign out and confirm signed-out state.
 5. **Given** a user submitting invalid credentials, **When** they attempt to
    sign in, **Then** a clear error message is shown without revealing whether
    the email exists.
+6. **Given** an account that has had 5 consecutive failed sign-in attempts,
+   **When** the user (or anyone) attempts to sign in to that account during
+   the next 15 minutes, **Then** the request returns the same generic
+   invalid-credentials error as a wrong password — the lockout state is not
+   disclosed (FR-029) — and after the 15-minute window the account can be
+   signed into again with correct credentials.
+7. **Given** a single source IP has issued 10 sign-in attempts within the
+   last minute, **When** that IP issues an 11th sign-in attempt in that
+   window, **Then** the request is throttled and rejected before reaching
+   the credential check.
 
 ---
 
@@ -265,6 +283,13 @@ device and confirm the same bookmark is present.
 - **Sign-out clears authenticated views**: User signs out — bookmarks list is
   no longer accessible; cached chrome state does not leak the previous user's
   bookmarks.
+- **Account locked mid-attack**: An attacker (or curious user) makes 5 wrong
+  guesses on someone's email — that account is locked for 15 minutes; the
+  legitimate owner sees the same generic error as a wrong password during
+  that window. After 15 minutes correct credentials succeed.
+- **IP-rate-limited sign-in**: A single IP issues 10 sign-in attempts in a
+  minute — further attempts in that window are rejected with HTTP 429 before
+  any password check runs; legitimate users on a different IP are unaffected.
 
 ## Requirements *(mandatory)*
 
@@ -339,21 +364,45 @@ device and confirm the same bookmark is present.
 
 - **FR-024**: System MUST allow users to register an account using email and
   password.
+- **FR-024a**: When the submitted registration email is already in use, the
+  system MUST return a clear distinct error (HTTP 409) so the user can recover.
+  This deliberately diverges from FR-029's generic-error approach because clear
+  feedback on registration outweighs enumeration resistance for the MVP. The
+  sign-in path retains generic errors per FR-029.
 - **FR-025**: System MUST allow registered users to sign in with email and
   password.
 - **FR-026**: System MUST keep signed-in users signed in across browser
   sessions until they explicitly sign out or the session expires.
+- **FR-026a**: Access tokens issued at sign-in MUST have a lifetime of
+  15 minutes. Refresh tokens MUST have a lifetime of 30 days, MUST rotate on
+  use, and reuse of an already-rotated refresh token MUST revoke every active
+  refresh token for that user (refresh-token-reuse detection). Sign-out MUST
+  revoke the active refresh token immediately.
 - **FR-027**: System MUST allow users to use Quran reading, multi-language UI,
   audio playback, search, and Tafsir without an account.
 - **FR-028**: System MUST hash and salt user passwords before storing them and
   MUST never store, transmit, or write plaintext passwords to logs.
 - **FR-029**: System MUST return generic sign-in failure messages that do not
   disclose whether a given email is registered.
+- **FR-029a**: System MUST lock an account for 15 minutes after 5 consecutive
+  failed sign-in attempts on that account. Sign-in attempts during the lockout
+  window MUST return the same generic invalid-credentials error as a wrong
+  password (FR-029) and MUST NOT disclose that the account is locked. The
+  lockout counter MUST reset on a successful sign-in.
+- **FR-029b**: System MUST throttle sign-in attempts from a single source IP
+  to at most 10 attempts per minute, returning a generic
+  "too many attempts, please try again later" response (HTTP 429) for further
+  attempts within that window without invoking credential validation.
 
 **Bookmarks (US7)**
 
 - **FR-030**: Signed-in users MUST be able to add and remove a bookmark on any
   Ayah.
+- **FR-030a**: The system MUST cap a single user at 1,000 active (non-deleted)
+  bookmarks. Requests to add a bookmark beyond that cap MUST be rejected with a
+  distinct 409 error (RFC 7807 problem type
+  `https://quraan.app/problems/bookmark-limit-reached`) so the UI can show a
+  "bookmark limit reached" message rather than a generic failure.
 - **FR-031**: Signed-in users MUST be able to view a list of all their
   bookmarks, each showing the Surah name and Ayah number.
 - **FR-032**: Selecting a bookmark MUST open the corresponding Surah scrolled
@@ -465,6 +514,11 @@ device and confirm the same bookmark is present.
 - **Network**: Users are assumed to have a network connection capable of
   streaming audio when the audio feature is in use; reading and search remain
   usable on slow connections.
+- **Network performance baseline**: "Typical mobile network" referenced in
+  SC-001, SC-003, and SC-009 is defined as the Playwright `Slow 3G` profile
+  (≈400 kbps download, ≈400 kbps upload, 400 ms RTT). All performance
+  assertions in CI run against this profile so the success criteria are
+  reproducible.
 - **Admin tooling**: No admin UI is in MVP scope. Quran, translation, Tafsir,
   and reciter content are loaded once via a seeded data import.
 - **Content licensing**: All bundled content (translation edition, Tafsir

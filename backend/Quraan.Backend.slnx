@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Quraan.Api/Quraan.Api.csproj" />
+    <Project Path="src/Quraan.Application/Quraan.Application.csproj" />
+    <Project Path="src/Quraan.Domain/Quraan.Domain.csproj" />
+    <Project Path="src/Quraan.Infrastructure/Quraan.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Quraan.ContractTests/Quraan.ContractTests.csproj" />
+    <Project Path="tests/Quraan.IntegrationTests/Quraan.IntegrationTests.csproj" />
+    <Project Path="tests/Quraan.UnitTests/Quraan.UnitTests.csproj" />
+  </Folder>
+</Solution>

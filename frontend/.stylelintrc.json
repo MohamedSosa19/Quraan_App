@@ -1,0 +1,13 @@
+{
+  "extends": ["stylelint-config-recommended-scss"],
+  "plugins": ["stylelint-use-logical"],
+  "rules": {
+    "csstools/use-logical": ["always", { "except": ["float", "clear"] }],
+    "color-no-invalid-hex": true,
+    "no-duplicate-selectors": true,
+    "selector-pseudo-class-no-unknown": [true, { "ignorePseudoClasses": ["host", "host-context"] }]
+  },
+  "overrides": [
+    { "files": ["**/*.scss"], "customSyntax": "postcss-scss" }
+  ]
+}

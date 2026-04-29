@@ -1,0 +1,66 @@
+{
+  "name": "frontend",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "singleQuote": true,
+    "overrides": [
+      {
+        "files": "*.html",
+        "options": {
+          "parser": "angular"
+        }
+      }
+    ]
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/cdk": "^20.2.14",
+    "@angular/common": "^20.2.0",
+    "@angular/compiler": "^20.2.0",
+    "@angular/core": "^20.2.0",
+    "@angular/forms": "^20.2.0",
+    "@angular/material": "^20.2.14",
+    "@angular/platform-browser": "^20.2.0",
+    "@angular/router": "^20.2.0",
+    "@ngx-translate/core": "^17.0.0",
+    "@ngx-translate/http-loader": "^17.0.0",
+    "@types/howler": "^2.2.12",
+    "howler": "^2.2.4",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.15.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^20.2.0",
+    "@angular/cli": "^20.2.0",
+    "@angular/compiler-cli": "^20.2.0",
+    "@axe-core/playwright": "^4.11.2",
+    "@playwright/test": "^1.59.1",
+    "@types/jasmine": "~5.1.0",
+    "angular-eslint": "^20.7.0",
+    "axe-core": "^4.11.3",
+    "eslint": "^9.39.4",
+    "jasmine-core": "~5.9.0",
+    "karma": "~6.4.0",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "nswag": "^14.7.1",
+    "postcss-scss": "^4.0.9",
+    "prettier": "^3.8.3",
+    "stylelint": "^17.9.1",
+    "stylelint-config-recommended-scss": "^17.0.1",
+    "stylelint-use-logical": "^2.1.3",
+    "typescript": "~5.9.2",
+    "typescript-eslint": "^8.59.1"
+  }
+}

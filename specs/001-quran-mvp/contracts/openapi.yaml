@@ -204,10 +204,11 @@ paths:
               schema: { $ref: '#/components/schemas/AuthResponse' }
         '400': { $ref: '#/components/responses/Problem400' }
         '409':
-          description: Email already in use
+          description: Email already in use (FR-024a)
           content:
             application/problem+json:
               schema: { $ref: '#/components/schemas/ProblemDetails' }
+        '429': { $ref: '#/components/responses/Problem429' }
 
   /auth/login:
     post:
@@ -230,10 +231,11 @@ paths:
             application/json:
               schema: { $ref: '#/components/schemas/AuthResponse' }
         '401':
-          description: Generic invalid-credentials response (FR-029)
+          description: Generic invalid-credentials response (FR-029, FR-029a — lockout state is NOT disclosed)
           content:
             application/problem+json:
               schema: { $ref: '#/components/schemas/ProblemDetails' }
+        '429': { $ref: '#/components/responses/Problem429' }
 
   /auth/refresh:
     post:
@@ -426,6 +428,15 @@ components:
           schema: { $ref: '#/components/schemas/ProblemDetails' }
     Problem404:
       description: Not found
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/ProblemDetails' }
+    Problem429:
+      description: Too many requests (sign-in IP rate limit, FR-029b)
+      headers:
+        Retry-After:
+          description: Seconds until the rate-limit window resets
+          schema: { type: integer }
       content:
         application/problem+json:
           schema: { $ref: '#/components/schemas/ProblemDetails' }
