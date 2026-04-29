@@ -6,6 +6,7 @@ using Quraan.Api.Middleware;
 using Quraan.Application.Ayahs;
 using Quraan.Application.Caching;
 using Quraan.Application.Surahs;
+using Quraan.Application.Users;
 using Quraan.Domain.Repositories;
 using Quraan.Infrastructure.Identity;
 using Quraan.Infrastructure.Persistence;
@@ -94,8 +95,10 @@ builder.Services.AddScoped<IBookmarkRepository, BookmarkRepository>();
 builder.Services.AddScoped<ILastReadRepository, LastReadRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<ITranslationRepository, TranslationRepository>();
+builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
 builder.Services.AddScoped<ISurahService, SurahService>();
 builder.Services.AddScoped<IAyahService, AyahService>();
+builder.Services.AddScoped<IUserProfileService, UserProfileService>();
 
 // --- Web pipeline ----------------------------------------------------------
 builder.Services.AddControllers();

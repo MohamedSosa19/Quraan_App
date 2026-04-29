@@ -10,6 +10,13 @@ export class LanguageService {
   private readonly translate = inject(TranslateService);
   readonly currentLang = signal<AppLocale>(this.read());
 
+  /**
+   * Optional sink invoked whenever the user actively switches languages while
+   * signed in. Wired up in US6 (auth.service.ts) to fire `PATCH /users/me`.
+   * Kept null while anonymous so US2 ships without an auth dependency.
+   */
+  private serverSyncSink: ((lang: AppLocale) => void) | null = null;
+
   constructor() {
     this.translate.use(this.currentLang());
     effect(() => {
@@ -19,8 +26,26 @@ export class LanguageService {
     });
   }
 
+  /** User-initiated language switch. Fires `serverSyncSink` if registered. */
   setLanguage(lang: AppLocale): void {
+    if (this.currentLang() === lang) return;
     this.currentLang.set(lang);
+    this.serverSyncSink?.(lang);
+  }
+
+  /**
+   * Apply a server-supplied preference (e.g. on sign-in). Updates the local
+   * state without re-firing `serverSyncSink` so we don't loop a PATCH back
+   * to the server that just told us the value.
+   */
+  applyServerPreference(lang: AppLocale): void {
+    if (this.currentLang() === lang) return;
+    this.currentLang.set(lang);
+  }
+
+  /** Registered by US6 once `auth.service.ts` exists. */
+  registerServerSyncSink(sink: ((lang: AppLocale) => void) | null): void {
+    this.serverSyncSink = sink;
   }
 
   private read(): AppLocale {

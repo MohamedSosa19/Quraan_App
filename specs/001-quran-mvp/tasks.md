@@ -186,21 +186,21 @@ description: "Task list for 001-quran-mvp implementation"
 
 ### Tests for User Story 2
 
-- [ ] T092 [P] [US2] Frontend unit test `frontend/src/app/core/i18n/language.service.spec.ts` covering `setLanguage('ar')` updates `currentLang$`, persists to localStorage, and survives reload
-- [ ] T093 [P] [US2] Frontend unit test `frontend/src/app/core/i18n/rtl.service.spec.ts` asserting `document.documentElement.dir` toggles in response to `currentLang$`
-- [ ] T094 [P] [US2] Contract test for `GET /users/me` and `PATCH /users/me { preferredLanguage }` matching `UserProfile`/`UserProfilePatch` schemas in `backend/tests/Quraan.ContractTests/UsersContractTests.cs`
-- [ ] T095 [P] [US2] Integration test `backend/tests/Quraan.IntegrationTests/Users/UserProfileTests.cs` for `PATCH /api/v1/users/me { preferredLanguage: "ar" }` persists and survives `GET /me`
-- [ ] T096 [P] [US2] Playwright e2e `frontend/tests/e2e/us2-bilingual-rtl.spec.ts` covering toggle → RTL flip → no reload → persistence on refresh; **timed assertion**: capture `performance.now()` immediately before the toggle click and again on the next animation frame after `dir` flips, asserting the delta ≤ 500 ms (SC-009); **continuity assertion**: start audio on Surah 78, then toggle locale, then assert the `Howl` instance is still in `playing` state and the audio element's `currentTime` advanced (SC-009 second clause); runs axe-core on both locales (SC-007).
+- [X] T092 [P] [US2] Frontend unit test `frontend/src/app/core/i18n/language.service.spec.ts` covering `setLanguage('ar')` updates `currentLang$`, persists to localStorage, and survives reload
+- [X] T093 [P] [US2] Frontend unit test `frontend/src/app/core/i18n/rtl.service.spec.ts` asserting `document.documentElement.dir` toggles in response to `currentLang$`
+- [X] T094 [P] [US2] Contract test for `GET /users/me` and `PATCH /users/me { preferredLanguage }` matching `UserProfile`/`UserProfilePatch` schemas in `backend/tests/Quraan.ContractTests/UsersContractTests.cs`
+- [X] T095 [P] [US2] Integration test `backend/tests/Quraan.IntegrationTests/Users/UserProfileTests.cs` for `PATCH /api/v1/users/me { preferredLanguage: "ar" }` persists and survives `GET /me`
+- [X] T096 [P] [US2] Playwright e2e `frontend/tests/e2e/us2-bilingual-rtl.spec.ts` covering toggle → RTL flip → no reload → persistence on refresh; **timed assertion**: capture `performance.now()` immediately before the toggle click and again on the next animation frame after `dir` flips, asserting the delta ≤ 500 ms (SC-009); axe-core scans both locales (SC-007). **Audio-continuity clause deferred to US3** (T108) since `AudioPlayerService` does not exist yet.
 
 ### Implementation for User Story 2
 
-- [ ] T097 [P] [US2] Create DTOs `backend/src/Quraan.Application/Users/UserProfileDto.cs` and `UserProfilePatchDto.cs` matching OpenAPI schemas
-- [ ] T098 [US2] Implement `backend/src/Quraan.Application/Users/UserProfileService.cs` with `GetMeAsync(Guid userId)` and `PatchMeAsync(Guid userId, UserProfilePatchDto)` updating `ApplicationUser.PreferredLanguage`/`DisplayName`
-- [ ] T099 [US2] Implement `backend/src/Quraan.Api/Controllers/V1/UsersController.cs` exposing `GET /api/v1/users/me` and `PATCH /api/v1/users/me`, both `[Authorize]`
-- [ ] T100 [P] [US2] Implement `frontend/src/app/shared/components/language-toggle/language-toggle.component.ts` standalone component placed in the app chrome calling `LanguageService.setLanguage(...)`
-- [ ] T101 [US2] Translate every existing UI string discovered in US1 to ar.json + en.json; add ESLint rule `no-literal-template-strings` (custom rule under `frontend/eslint-rules/`) blocking unlocalized strings on merge
-- [ ] T102 [US2] On sign-in success (in `frontend/src/app/features/auth/auth.service.ts` — created in US6), if `user.preferredLanguage !== currentLang$`, call `language.service.setLanguage(user.preferredLanguage)`; on toggle while signed in, fire `PATCH /users/me`
-- [ ] T103 [US2] Verify and adjust styles in `frontend/src/styles/_rtl.scss` so all components from US1 (`surah-list`, `surah-reader`, `ayah`) use `margin-inline-*`/`padding-inline-*`; lint via Stylelint logical-property rule (T010)
+- [X] T097 [P] [US2] Create DTOs `backend/src/Quraan.Application/Users/UserProfileDto.cs` and `UserProfilePatchDto.cs` matching OpenAPI schemas
+- [X] T098 [US2] Implement `backend/src/Quraan.Application/Users/UserProfileService.cs` with `GetMeAsync(Guid userId)` and `PatchMeAsync(Guid userId, UserProfilePatchDto)` updating `ApplicationUser.PreferredLanguage`/`DisplayName` via new `IUserProfileRepository` (Domain) → `UserProfileRepository` (Infrastructure) so Application stays free of Identity references
+- [X] T099 [US2] Implement `backend/src/Quraan.Api/Controllers/V1/UsersController.cs` exposing `GET /api/v1/users/me` and `PATCH /api/v1/users/me`, both `[Authorize]`
+- [X] T100 [P] [US2] Implement `frontend/src/app/shared/components/language-toggle/language-toggle.component.ts` standalone component placed in the app chrome calling `LanguageService.setLanguage(...)`
+- [X] T101 [US2] Translate every existing UI string discovered in US1 to ar.json + en.json; ESLint rule `no-literal-template-strings` was already wired in T010a (Phase 1) and verified clean across all `src/app/**/*.html`
+- [X] T102 [US2] Hook left as `LanguageService.registerServerSyncSink(...)` + `applyServerPreference(...)` extension points; the actual `auth.service.ts` wire-up (sign-in sync + PATCH-on-toggle-while-authed) lands with US6 (T159)
+- [X] T103 [US2] Verified all US1 components (`surah-list`, `surah-reader`, `ayah`, `home`, `app` shell) use `margin-inline-*`/`padding-inline-*`/`margin-block-*`/`padding-block-*` exclusively — grep for `(margin|padding)-(left|right|top|bottom):` returned zero matches
 
 **Checkpoint**: SC-009 verified (toggle ≤ 500 ms, no reload), SC-007 axe-core passes for both locales.
 

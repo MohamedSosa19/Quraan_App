@@ -25,10 +25,11 @@ describe('App', () => {
     expect(fixture.componentInstance).toBeTruthy();
   });
 
-  it('renders the language toggle', () => {
+  it('renders the language toggle component in the shell', () => {
     const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.app-shell__lang')).toBeTruthy();
+    expect(compiled.querySelector('app-language-toggle')).toBeTruthy();
+    expect(compiled.querySelector('[data-testid="language-toggle"]')).toBeTruthy();
   });
 });

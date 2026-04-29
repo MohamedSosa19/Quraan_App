@@ -5,9 +5,7 @@
   <nav class="app-shell__nav" aria-label="Primary">
     <a routerLink="/surahs">{{ 'nav.surahs' | translate }}</a>
   </nav>
-  <button type="button" class="app-shell__lang" (click)="switchLanguage()">
-    {{ currentLang === 'ar' ? 'English' : 'العربية' }}
-  </button>
+  <app-language-toggle />
 </header>
 
 <main class="app-shell__main">
