@@ -53,8 +53,14 @@
       </nav>
     </header>
 
+    <app-audio-player [surahId]="d.id" />
+
     <cdk-virtual-scroll-viewport itemSize="160" class="reader__viewport">
-      <app-ayah *cdkVirtualFor="let a of d.ayahs; trackBy: trackById" [ayah]="a" />
+      <app-ayah
+        *cdkVirtualFor="let a of d.ayahs; trackBy: trackById"
+        [ayah]="a"
+        [isPlaying]="a.numberInSurah === playingAyah()"
+      />
     </cdk-virtual-scroll-viewport>
   }
 </section>

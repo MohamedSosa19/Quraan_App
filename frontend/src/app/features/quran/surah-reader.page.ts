@@ -5,13 +5,15 @@ import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
 
+import { AudioPlayerComponent } from '../audio/audio-player.component';
+import { AudioPlayerService } from '../audio/audio-player.service';
 import { AyahComponent } from './ayah.component';
 import { Ayah, QuranApiService, SurahDetail } from './quran-api.service';
 
 @Component({
   selector: 'app-surah-reader',
   standalone: true,
-  imports: [AyahComponent, FormsModule, ScrollingModule, TranslateModule],
+  imports: [AudioPlayerComponent, AyahComponent, FormsModule, ScrollingModule, TranslateModule],
   templateUrl: './surah-reader.page.html',
   styleUrls: ['./surah-reader.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,6 +22,10 @@ export class SurahReaderPage {
   private readonly api = inject(QuranApiService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly player = inject(AudioPlayerService);
+
+  /** R-09: highlight only — never auto-scroll. */
+  readonly playingAyah = this.player.currentAyah;
 
   readonly detail = signal<SurahDetail | null>(null);
   readonly loading = signal<boolean>(true);

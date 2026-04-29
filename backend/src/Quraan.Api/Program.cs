@@ -3,11 +3,17 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Quraan.Api.Middleware;
+using System.Net;
+using Microsoft.Extensions.Http;
+using Polly;
+using Polly.Extensions.Http;
+using Quraan.Application.Audio;
 using Quraan.Application.Ayahs;
 using Quraan.Application.Caching;
 using Quraan.Application.Surahs;
 using Quraan.Application.Users;
 using Quraan.Domain.Repositories;
+using Quraan.Infrastructure.ExternalAudio;
 using Quraan.Infrastructure.Identity;
 using Quraan.Infrastructure.Persistence;
 using Quraan.Infrastructure.Repositories;
@@ -96,9 +102,25 @@ builder.Services.AddScoped<ILastReadRepository, LastReadRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<ITranslationRepository, TranslationRepository>();
 builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
+builder.Services.AddScoped<IReciterRepository, ReciterRepository>();
 builder.Services.AddScoped<ISurahService, SurahService>();
 builder.Services.AddScoped<IAyahService, AyahService>();
 builder.Services.AddScoped<IUserProfileService, UserProfileService>();
+builder.Services.AddSingleton<IAudioUrlBuilder, AlQuranCloudClient>();
+builder.Services.AddScoped<IAudioService, AudioService>();
+
+// quran.com timing API — typed HttpClient with 5s timeout + Polly retry (R-04, FR-014).
+builder.Services.AddHttpClient<IAudioTimingProvider, QuranComClient>(c =>
+{
+    c.BaseAddress = new Uri(builder.Configuration["ExternalAudio:QuranComBaseUrl"] ?? "https://api.quran.com");
+    c.Timeout = TimeSpan.FromSeconds(5);
+    c.DefaultRequestHeaders.Add("Accept", "application/json");
+    c.DefaultRequestHeaders.Add("User-Agent", "QuraanApp/1.0");
+})
+.AddPolicyHandler(HttpPolicyExtensions
+    .HandleTransientHttpError()
+    .OrResult(r => r.StatusCode == HttpStatusCode.TooManyRequests)
+    .WaitAndRetryAsync(2, attempt => TimeSpan.FromMilliseconds(200 * attempt)));
 
 // --- Web pipeline ----------------------------------------------------------
 builder.Services.AddControllers();

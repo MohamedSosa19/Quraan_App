@@ -36,5 +36,15 @@
       "Meccan": "Meccan",
       "Medinan": "Medinan"
     }
+  },
+  "audio": {
+    "play": "Play",
+    "pause": "Pause",
+    "resume": "Resume",
+    "retry": "Retry",
+    "ayahLabel": "Ayah {{n}}",
+    "error": {
+      "unreachable": "Audio source unavailable. Please check your connection."
+    }
   }
 }

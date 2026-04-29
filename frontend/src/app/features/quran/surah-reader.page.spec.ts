@@ -4,6 +4,9 @@ import { provideTranslateService, TranslateLoader, TranslateNoOpLoader } from '@
 import { BehaviorSubject, of } from 'rxjs';
 import { convertToParamMap, ParamMap } from '@angular/router';
 
+import { signal } from '@angular/core';
+
+import { AudioPlayerService } from '../audio/audio-player.service';
 import { Ayah, QuranApiService, SurahDetail } from './quran-api.service';
 import { SurahReaderPage } from './surah-reader.page';
 
@@ -53,6 +56,14 @@ describe('SurahReaderPage', () => {
     paramMap$ = new BehaviorSubject<ParamMap>(convertToParamMap({ surahId: '2' }));
     queryParamMap$ = new BehaviorSubject<ParamMap>(convertToParamMap({}));
 
+    const audioStub: Partial<AudioPlayerService> = {
+      state: signal('idle'),
+      currentSurahId: signal<number | null>(null),
+      currentAyah: signal<number | null>(null),
+      hasTimings: signal(false),
+      errorMessage: signal<string | null>(null),
+    } as Partial<AudioPlayerService>;
+
     await TestBed.configureTestingModule({
       imports: [SurahReaderPage],
       providers: [
@@ -67,6 +78,7 @@ describe('SurahReaderPage', () => {
           provide: ActivatedRoute,
           useValue: { paramMap: paramMap$, queryParamMap: queryParamMap$ },
         },
+        { provide: AudioPlayerService, useValue: audioStub },
       ],
     }).compileComponents();
   });

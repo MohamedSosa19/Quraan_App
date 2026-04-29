@@ -25,6 +25,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Quraan.Application\Quraan.Application.csproj" />
     <ProjectReference Include="..\..\src\Quraan.Domain\Quraan.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Quraan.Infrastructure\Quraan.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

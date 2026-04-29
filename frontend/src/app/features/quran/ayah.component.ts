@@ -7,7 +7,12 @@ import { Ayah } from './quran-api.service';
   standalone: true,
   template: `
     @if (ayah) {
-      <article class="ayah" [attr.data-ayah]="ayah.numberInSurah" [id]="'ayah-' + ayah.numberInSurah">
+      <article
+        class="ayah"
+        [class.is-playing]="isPlaying"
+        [attr.data-ayah]="ayah.numberInSurah"
+        [id]="'ayah-' + ayah.numberInSurah"
+      >
         <header class="ayah__header">
           <span class="ayah__number" aria-hidden="true">{{ ayah.numberInSurah }}</span>
         </header>
@@ -23,13 +28,17 @@ import { Ayah } from './quran-api.service';
         grid-template-columns: auto 1fr;
         gap: var(--space-3);
         padding-block: var(--space-3);
+        padding-inline: var(--space-2);
         border-block-end: 1px solid var(--color-border);
+        transition: background-color 0.2s ease;
       }
 
-      .ayah__header {
-        display: flex;
-        align-items: flex-start;
+      .ayah.is-playing {
+        background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+        border-inline-start: 3px solid var(--color-accent);
       }
+
+      .ayah__header { display: flex; align-items: flex-start; }
 
       .ayah__number {
         display: inline-flex;
@@ -58,13 +67,8 @@ import { Ayah } from './quran-api.service';
       }
 
       @media (min-width: 48rem) {
-        .ayah {
-          grid-template-columns: auto 1fr 1fr;
-        }
-
-        .ayah__translation {
-          margin-block-start: 0;
-        }
+        .ayah { grid-template-columns: auto 1fr 1fr; }
+        .ayah__translation { margin-block-start: 0; }
       }
     `,
   ],
@@ -72,4 +76,5 @@ import { Ayah } from './quran-api.service';
 })
 export class AyahComponent {
   @Input({ required: true }) ayah!: Ayah;
+  @Input() isPlaying = false;
 }
