@@ -1,0 +1,44 @@
+<section class="bookmarks">
+  <h1>{{ 'bookmarks.title' | translate }}</h1>
+
+  @if (loading()) {
+    <p class="status">{{ 'common.loading' | translate }}</p>
+  }
+
+  @if (error() && !loading()) {
+    <p class="status status--error">
+      {{ 'bookmarks.loadFailed' | translate }}
+      <button type="button" (click)="refresh()">{{ 'common.retry' | translate }}</button>
+    </p>
+  }
+
+  @if (!loading() && !error() && isEmpty()) {
+    <p class="status" data-testid="bookmarks-empty">
+      {{ 'bookmarks.empty' | translate }}
+    </p>
+  }
+
+  @if (store.items().length > 0) {
+    <ul class="bookmarks__list" data-testid="bookmarks-list">
+      @for (b of store.items(); track b.id) {
+        <li class="bookmarks__item" data-testid="bookmark-item">
+          <button
+            type="button"
+            class="bookmarks__open"
+            data-testid="bookmark-open"
+            (click)="open(b.surahId, b.numberInSurah)"
+          >
+            <span class="bookmarks__locator">{{ b.surahId }}:{{ b.numberInSurah }}</span>
+          </button>
+          <button
+            type="button"
+            class="bookmarks__remove"
+            data-testid="bookmark-remove"
+            (click)="remove(b.id)"
+            [attr.aria-label]="'bookmarks.remove' | translate"
+          >×</button>
+        </li>
+      }
+    </ul>
+  }
+</section>

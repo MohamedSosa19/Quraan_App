@@ -16,6 +16,7 @@ using Quraan.Application.Audio;
 using Quraan.Application.Auth;
 using Quraan.Application.Auth.Validators;
 using Quraan.Application.Ayahs;
+using Quraan.Application.Bookmarks;
 using Quraan.Application.Caching;
 using Quraan.Application.Search;
 using Quraan.Application.Surahs;
@@ -121,6 +122,7 @@ builder.Services.AddScoped<ISearchService, SearchService>();
 builder.Services.AddScoped<ITafsirService, TafsirService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IBookmarkService, BookmarkService>();
 
 // FluentValidation — auto-runs on [FromBody] DTOs that have a registered validator.
 builder.Services.AddFluentValidationAutoValidation();

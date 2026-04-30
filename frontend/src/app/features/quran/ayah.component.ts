@@ -1,13 +1,14 @@
 import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 
+import { BookmarkButtonComponent } from '../bookmarks/bookmark-button.component';
 import { TafsirPanelService } from '../tafsir/tafsir-panel.service';
 import { Ayah } from './quran-api.service';
 
 @Component({
   selector: 'app-ayah',
   standalone: true,
-  imports: [TranslateModule],
+  imports: [BookmarkButtonComponent, TranslateModule],
   template: `
     @if (ayah) {
       <article
@@ -22,6 +23,10 @@ import { Ayah } from './quran-api.service';
         <p class="ayah__arabic mushaf-font" lang="ar" dir="rtl">{{ ayah.arabicText }}</p>
         <p class="ayah__translation" lang="en" dir="ltr">{{ ayah.translationText }}</p>
         <footer class="ayah__actions">
+          <app-bookmark-button
+            [surahId]="ayah.surahId"
+            [numberInSurah]="ayah.numberInSurah"
+          />
           <button
             type="button"
             class="ayah__tafsir-button"
@@ -83,6 +88,7 @@ import { Ayah } from './quran-api.service';
         grid-column: 1 / -1;
         display: flex;
         justify-content: flex-end;
+        gap: var(--space-2);
         margin-block-start: var(--space-2);
       }
 

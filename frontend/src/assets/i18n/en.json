@@ -84,5 +84,13 @@
       "generic": "The email or password you entered is incorrect.",
       "emailTaken": "An account with this email already exists."
     }
+  },
+  "bookmarks": {
+    "title": "Bookmarks",
+    "empty": "You haven't bookmarked any Ayahs yet.",
+    "add": "Add bookmark",
+    "remove": "Remove bookmark",
+    "loadFailed": "Could not load bookmarks.",
+    "signInToSave": "Sign in to save this Ayah."
   }
 }

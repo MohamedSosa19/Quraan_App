@@ -9,6 +9,7 @@ namespace Quraan.IntegrationTests.Users;
 public sealed class IntegrationTestAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
 {
     public const string SchemeName = "Test";
+    public const string HeaderName = "X-Test-User";
 
     public IntegrationTestAuthHandler(
         IOptionsMonitor<AuthenticationSchemeOptions> options,

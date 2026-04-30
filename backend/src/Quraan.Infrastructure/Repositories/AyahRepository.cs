@@ -25,6 +25,15 @@ public sealed class AyahRepository : IAyahRepository
             .Include(a => a.Translations.Where(t => t.TranslationId == translationId))
             .FirstOrDefaultAsync(ct);
 
+    public async Task<int?> GetIdByPositionAsync(byte surahId, short numberInSurah, CancellationToken ct = default)
+    {
+        var id = await _db.Ayahs.AsNoTracking()
+            .Where(a => a.SurahId == surahId && a.NumberInSurah == numberInSurah)
+            .Select(a => (int?)a.Id)
+            .FirstOrDefaultAsync(ct).ConfigureAwait(false);
+        return id;
+    }
+
     public async Task<IReadOnlyList<Ayah>> SearchArabicAsync(string normalizedQuery, int skip, int take, CancellationToken ct = default)
     {
         var pattern = $"%{normalizedQuery}%";

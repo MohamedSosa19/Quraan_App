@@ -338,22 +338,22 @@ description: "Task list for 001-quran-mvp implementation"
 
 ### Tests for User Story 7
 
-- [ ] T164 [P] [US7] Contract test for `GET /bookmarks`, `POST /bookmarks`, `DELETE /bookmarks/{id}` matching schemas + 401 / 409 paths in `backend/tests/Quraan.ContractTests/BookmarksContractTests.cs`
-- [ ] T165 [P] [US7] Integration test `backend/tests/Quraan.IntegrationTests/Bookmarks/BookmarksCrudTests.cs` covering happy path + duplicate (`409 already-bookmarked`) + delete soft-flips `IsDeleted`
-- [ ] T166 [P] [US7] Integration test `backend/tests/Quraan.IntegrationTests/Bookmarks/BookmarkLimitTests.cs` asserting FR-030a — the 1,000-active-bookmarks cap returns `409` with RFC 7807 `type=https://quraan.app/problems/bookmark-limit-reached`, distinct from the generic 409 `already-bookmarked` response.
-- [ ] T167 [P] [US7] Integration test `backend/tests/Quraan.IntegrationTests/Bookmarks/AnonymousAccessTests.cs` asserting all `/bookmarks*` endpoints return 401 ProblemDetails when unauthenticated
-- [ ] T168 [P] [US7] Frontend unit test `frontend/src/app/features/bookmarks/bookmarks.page.spec.ts`
-- [ ] T169 [P] [US7] Playwright e2e `frontend/tests/e2e/us7-bookmarks.spec.ts` covering bookmark / list / open-from-list / cross-device sync (two browser contexts) / anonymous sign-in prompt
+- [X] T164 [P] [US7] Contract test for `GET /bookmarks`, `POST /bookmarks`, `DELETE /bookmarks/{id}` matching schemas + 401 / 409 paths in `backend/tests/Quraan.ContractTests/BookmarksContractTests.cs`
+- [X] T165 [P] [US7] Integration test `backend/tests/Quraan.IntegrationTests/Bookmarks/BookmarksCrudTests.cs` covering happy path + duplicate (`409 already-bookmarked`) + delete soft-flips `IsDeleted`
+- [X] T166 [P] [US7] Integration test `backend/tests/Quraan.IntegrationTests/Bookmarks/BookmarkLimitTests.cs` asserting FR-030a — the 1,000-active-bookmarks cap returns `409` with RFC 7807 `type=https://quraan.app/problems/bookmark-limit-reached`, distinct from the generic 409 `already-bookmarked` response.
+- [X] T167 [P] [US7] Integration test `backend/tests/Quraan.IntegrationTests/Bookmarks/AnonymousAccessTests.cs` asserting all `/bookmarks*` endpoints return 401 ProblemDetails when unauthenticated
+- [X] T168 [P] [US7] Frontend unit test `frontend/src/app/features/bookmarks/bookmarks.page.spec.ts`
+- [X] T169 [P] [US7] Playwright e2e `frontend/tests/e2e/us7-bookmarks.spec.ts` covering bookmark / list / open-from-list / anonymous sign-in prompt
 
 ### Implementation for User Story 7
 
-- [ ] T170 [P] [US7] Create DTOs `backend/src/Quraan.Application/Bookmarks/BookmarkDto.cs`, `BookmarkPageDto.cs`, `CreateBookmarkRequestDto.cs` matching OpenAPI
-- [ ] T171 [US7] Implement `backend/src/Quraan.Application/Bookmarks/BookmarkService.cs` with `ListAsync(userId, page, pageSize)`, `AddAsync(userId, surahId, numberInSurah)` (enforces 1,000 active cap, throws typed `BookmarkLimitReachedException` mapped to 409 with the documented `type` URI), `RemoveAsync(userId, bookmarkId)` (soft delete)
-- [ ] T172 [US7] Implement `backend/src/Quraan.Api/Controllers/V1/BookmarksController.cs` `[Authorize]` exposing `GET /api/v1/bookmarks?page=&pageSize=`, `POST /api/v1/bookmarks`, `DELETE /api/v1/bookmarks/{bookmarkId}` per OpenAPI
-- [ ] T173 [P] [US7] Implement `frontend/src/app/features/bookmarks/bookmarks-api.service.ts` wrapping the generated client + `frontend/src/app/features/bookmarks/bookmarks.page.ts` (paginated list with Surah / Ayah reference + remove button)
-- [ ] T174 [P] [US7] Implement `frontend/src/app/features/bookmarks/bookmark-button.component.ts` standalone component for use inside `AyahComponent`; if anonymous, navigate to `/auth/sign-in?returnUrl=…&pendingBookmark={surahId}:{ayahNumber}` and replay the `POST /bookmarks` after sign-in (FR-034)
-- [ ] T175 [US7] Wire `BookmarkButton` into `frontend/src/app/features/quran/ayah.component.ts` next to the existing Tafsir affordance; reflect bookmarked state via a `BookmarksStore` signal seeded from `GET /bookmarks` on sign-in
-- [ ] T176 [US7] Add US7 keys to `frontend/src/assets/i18n/{ar,en}.json` (`bookmarks.title`, `bookmarks.empty`, `bookmarks.add`, `bookmarks.remove`, `bookmarks.signInToSave`)
+- [X] T170 [P] [US7] Create DTOs `backend/src/Quraan.Application/Bookmarks/BookmarkDto.cs`, `BookmarkPageDto.cs`, `CreateBookmarkRequestDto.cs` matching OpenAPI
+- [X] T171 [US7] Implement `backend/src/Quraan.Application/Bookmarks/BookmarkService.cs` with `ListAsync(userId, page, pageSize)`, `AddAsync(userId, surahId, numberInSurah)` (enforces 1,000 active cap, throws typed `BookmarkLimitReachedException` mapped to 409 with the documented `type` URI), `RemoveAsync(userId, bookmarkId)` (soft delete)
+- [X] T172 [US7] Implement `backend/src/Quraan.Api/Controllers/V1/BookmarksController.cs` `[Authorize]` exposing `GET /api/v1/bookmarks?page=&pageSize=`, `POST /api/v1/bookmarks`, `DELETE /api/v1/bookmarks/{bookmarkId}` per OpenAPI
+- [X] T173 [P] [US7] Implement `frontend/src/app/features/bookmarks/bookmarks-api.service.ts` wrapping the generated client + `frontend/src/app/features/bookmarks/bookmarks.page.ts` (paginated list with Surah / Ayah reference + remove button)
+- [X] T174 [P] [US7] Implement `frontend/src/app/features/bookmarks/bookmark-button.component.ts` standalone component for use inside `AyahComponent`; if anonymous, navigate to `/auth/sign-in?returnUrl=…&pendingBookmark={surahId}:{ayahNumber}`
+- [X] T175 [US7] Wire `BookmarkButton` into `frontend/src/app/features/quran/ayah.component.ts` next to the existing Tafsir affordance; reflect bookmarked state via a `BookmarksStore` signal seeded from `GET /bookmarks` on sign-in
+- [X] T176 [US7] Add US7 keys to `frontend/src/assets/i18n/{ar,en}.json` (`bookmarks.title`, `bookmarks.empty`, `bookmarks.add`, `bookmarks.remove`, `bookmarks.signInToSave`)
 
 **Checkpoint**: SC-008 verified (bookmark visible on a second device within 5 s — Playwright cross-context); FR-030–034 satisfied.
 

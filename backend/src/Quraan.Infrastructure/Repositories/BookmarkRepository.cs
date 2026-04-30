@@ -12,20 +12,20 @@ public sealed class BookmarkRepository : IBookmarkRepository
 
     public async Task<IReadOnlyList<Bookmark>> ListAsync(Guid userId, int skip, int take, CancellationToken ct = default) =>
         await _db.Bookmarks.AsNoTracking()
-            .Where(b => b.UserId == userId)
+            .Where(b => b.UserId == userId && !b.IsDeleted)
             .OrderByDescending(b => b.CreatedAt)
             .Skip(skip).Take(take)
             .Include(b => b.Ayah)
             .ToListAsync(ct).ConfigureAwait(false);
 
     public Task<int> CountAsync(Guid userId, CancellationToken ct = default) =>
-        _db.Bookmarks.AsNoTracking().CountAsync(b => b.UserId == userId, ct);
+        _db.Bookmarks.AsNoTracking().CountAsync(b => b.UserId == userId && !b.IsDeleted, ct);
 
     public Task<Bookmark?> GetAsync(Guid userId, Guid bookmarkId, CancellationToken ct = default) =>
-        _db.Bookmarks.FirstOrDefaultAsync(b => b.UserId == userId && b.Id == bookmarkId, ct);
+        _db.Bookmarks.FirstOrDefaultAsync(b => b.UserId == userId && b.Id == bookmarkId && !b.IsDeleted, ct);
 
     public Task<bool> ExistsAsync(Guid userId, int ayahId, CancellationToken ct = default) =>
-        _db.Bookmarks.AsNoTracking().AnyAsync(b => b.UserId == userId && b.AyahId == ayahId, ct);
+        _db.Bookmarks.AsNoTracking().AnyAsync(b => b.UserId == userId && b.AyahId == ayahId && !b.IsDeleted, ct);
 
     public async Task AddAsync(Bookmark bookmark, CancellationToken ct = default)
     {
