@@ -1,10 +1,13 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 
+import { TafsirPanelService } from '../tafsir/tafsir-panel.service';
 import { Ayah } from './quran-api.service';
 
 @Component({
   selector: 'app-ayah',
   standalone: true,
+  imports: [TranslateModule],
   template: `
     @if (ayah) {
       <article
@@ -18,6 +21,16 @@ import { Ayah } from './quran-api.service';
         </header>
         <p class="ayah__arabic mushaf-font" lang="ar" dir="rtl">{{ ayah.arabicText }}</p>
         <p class="ayah__translation" lang="en" dir="ltr">{{ ayah.translationText }}</p>
+        <footer class="ayah__actions">
+          <button
+            type="button"
+            class="ayah__tafsir-button"
+            data-testid="ayah-tafsir-button"
+            (click)="openTafsir()"
+          >
+            {{ 'tafsir.open' | translate }}
+          </button>
+        </footer>
       </article>
     }
   `,
@@ -66,6 +79,28 @@ import { Ayah } from './quran-api.service';
         color: var(--color-muted);
       }
 
+      .ayah__actions {
+        grid-column: 1 / -1;
+        display: flex;
+        justify-content: flex-end;
+        margin-block-start: var(--space-2);
+      }
+
+      .ayah__tafsir-button {
+        background: transparent;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-sm);
+        padding: var(--space-1) var(--space-3);
+        font-size: 0.875rem;
+        color: var(--color-muted);
+        cursor: pointer;
+      }
+
+      .ayah__tafsir-button:hover {
+        color: var(--color-accent);
+        border-color: var(--color-accent);
+      }
+
       @media (min-width: 48rem) {
         .ayah { grid-template-columns: auto 1fr 1fr; }
         .ayah__translation { margin-block-start: 0; }
@@ -77,4 +112,10 @@ import { Ayah } from './quran-api.service';
 export class AyahComponent {
   @Input({ required: true }) ayah!: Ayah;
   @Input() isPlaying = false;
+
+  private readonly tafsirPanel = inject(TafsirPanelService);
+
+  openTafsir(): void {
+    this.tafsirPanel.open(this.ayah.surahId, this.ayah.numberInSurah);
+  }
 }

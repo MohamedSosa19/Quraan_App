@@ -7,13 +7,14 @@ import { firstValueFrom } from 'rxjs';
 
 import { AudioPlayerComponent } from '../audio/audio-player.component';
 import { AudioPlayerService } from '../audio/audio-player.service';
+import { TafsirPanelComponent } from '../tafsir/tafsir-panel.component';
 import { AyahComponent } from './ayah.component';
 import { Ayah, QuranApiService, SurahDetail } from './quran-api.service';
 
 @Component({
   selector: 'app-surah-reader',
   standalone: true,
-  imports: [AudioPlayerComponent, AyahComponent, FormsModule, ScrollingModule, TranslateModule],
+  imports: [AudioPlayerComponent, AyahComponent, FormsModule, ScrollingModule, TafsirPanelComponent, TranslateModule],
   templateUrl: './surah-reader.page.html',
   styleUrls: ['./surah-reader.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,0 +1,49 @@
+@if (isOpen()) {
+  <aside
+    class="tafsir-panel"
+    role="complementary"
+    aria-labelledby="tafsir-panel-title"
+    data-testid="tafsir-panel"
+  >
+    <header class="tafsir-panel__header">
+      <h2 id="tafsir-panel-title">
+        {{ 'tafsir.title' | translate }}
+        @if (panel.selectedAyah(); as sel) {
+          <span class="tafsir-panel__locator">{{ sel.surahId }}:{{ sel.numberInSurah }}</span>
+        }
+      </h2>
+      <button
+        type="button"
+        class="tafsir-panel__close"
+        data-testid="tafsir-close"
+        (click)="close()"
+        [attr.aria-label]="'tafsir.close' | translate"
+      >×</button>
+    </header>
+
+    @if (status() === 'loading') {
+      <p class="tafsir-panel__status" data-testid="tafsir-loading">{{ 'common.loading' | translate }}</p>
+    }
+
+    @if (status() === 'not-available') {
+      <p class="tafsir-panel__status" data-testid="tafsir-not-available">
+        {{ 'tafsir.notAvailable' | translate }}
+      </p>
+    }
+
+    @if (status() === 'error') {
+      <p class="tafsir-panel__status status--error" data-testid="tafsir-error">
+        {{ 'tafsir.loadFailed' | translate }}
+      </p>
+    }
+
+    @if (status() === 'loaded' && entry(); as e) {
+      <div class="tafsir-panel__body" data-testid="tafsir-body">
+        <p>{{ e.body }}</p>
+      </div>
+      <footer class="tafsir-panel__attribution" data-testid="tafsir-attribution">
+        {{ 'tafsir.attribution' | translate: { name: e.source.name } }}
+      </footer>
+    }
+  </aside>
+}

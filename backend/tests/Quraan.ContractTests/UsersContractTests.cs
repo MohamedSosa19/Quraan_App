@@ -21,6 +21,7 @@ public sealed class UsersContractTests : IClassFixture<UsersContractTests.Factor
     public sealed class Factory : WebApplicationFactory<Program>
     {
         public readonly Guid TestUserId = Guid.NewGuid();
+        private readonly string _dbName = "contract-users-" + Guid.NewGuid();
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
@@ -29,7 +30,7 @@ public sealed class UsersContractTests : IClassFixture<UsersContractTests.Factor
             {
                 services.RemoveAll(typeof(DbContextOptions<QuraanDbContext>));
                 services.AddDbContext<QuraanDbContext>(o =>
-                    o.UseInMemoryDatabase("contract-users-" + Guid.NewGuid()));
+                    o.UseInMemoryDatabase(_dbName));
 
                 services.AddAuthentication(TestAuthHandler.SchemeName)
                     .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(TestAuthHandler.SchemeName, _ => { });

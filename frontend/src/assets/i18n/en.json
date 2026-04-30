@@ -62,5 +62,13 @@
     "previous": "Previous page",
     "page": "Page {{page}}",
     "loadFailed": "Search failed. Please try again."
+  },
+  "tafsir": {
+    "title": "Tafsir",
+    "open": "Tafsir",
+    "close": "Close",
+    "notAvailable": "Tafsir not available for this Ayah.",
+    "loadFailed": "Could not load Tafsir.",
+    "attribution": "Source: {{name}}"
   }
 }

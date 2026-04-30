@@ -273,19 +273,19 @@ description: "Task list for 001-quran-mvp implementation"
 
 ### Tests for User Story 5
 
-- [ ] T131 [P] [US5] Contract test for `GET /tafsir/{surahId}/{numberInSurah}` matching `TafsirEntry` schema, including 404 on missing entry, in `backend/tests/Quraan.ContractTests/TafsirContractTests.cs`
-- [ ] T132 [P] [US5] Integration test `backend/tests/Quraan.IntegrationTests/Tafsir/TafsirServiceTests.cs` covering: `GET /tafsir/1/2` returns body + source + attribution; a known-empty Ayah returns 404 ProblemDetails (FR-023)
-- [ ] T133 [P] [US5] Frontend unit test `frontend/src/app/features/tafsir/tafsir-panel.component.spec.ts` covering "loaded", "not-available", and "loading" states
-- [ ] T134 [P] [US5] Playwright e2e `frontend/tests/e2e/us5-tafsir.spec.ts`
+- [X] T131 [P] [US5] Contract test for `GET /tafsir/{surahId}/{numberInSurah}` matching `TafsirEntry` schema, including 404 on missing entry, in `backend/tests/Quraan.ContractTests/TafsirContractTests.cs`
+- [X] T132 [P] [US5] Integration test `backend/tests/Quraan.IntegrationTests/Tafsir/TafsirServiceTests.cs` covering: `GET /tafsir/1/2` returns body + source + attribution; a known-empty Ayah returns 404 ProblemDetails (FR-023)
+- [X] T133 [P] [US5] Frontend unit test `frontend/src/app/features/tafsir/tafsir-panel.component.spec.ts` covering "loaded", "not-available", and "loading" states
+- [X] T134 [P] [US5] Playwright e2e `frontend/tests/e2e/us5-tafsir.spec.ts`
 
 ### Implementation for User Story 5
 
-- [ ] T135 [P] [US5] Create DTOs `backend/src/Quraan.Application/Tafsir/TafsirEntryDto.cs`, `TafsirSourceDto.cs` matching OpenAPI schema
-- [ ] T136 [US5] Implement `backend/src/Quraan.Application/Tafsir/TafsirService.cs` with `GetForAyahAsync(int surahId, int numberInSurah, string source)` returning DTO or `null`; cache 24 h via `ICachedReader`
-- [ ] T137 [US5] Implement `backend/src/Quraan.Api/Controllers/V1/TafsirController.cs` exposing `GET /api/v1/tafsir/{surahId}/{numberInSurah}?source=ibn-kathir-en` returning 200 or 404 ProblemDetails
-- [ ] T138 [P] [US5] Implement `frontend/src/app/features/tafsir/tafsir-api.service.ts` wrapping the generated client and `frontend/src/app/features/tafsir/tafsir-panel.component.ts` (drawer / side panel) showing body + attribution or the "not available" message
-- [ ] T139 [US5] Wire a Tafsir affordance into `frontend/src/app/features/quran/ayah.component.ts` opening the `TafsirPanelComponent` for the tapped Ayah; navigation between Ayahs while panel open updates content (subscribe to `currentAyah$` of a new `TafsirPanelService`)
-- [ ] T140 [US5] Add US5 keys to `frontend/src/assets/i18n/{ar,en}.json` (`tafsir.title`, `tafsir.notAvailable`, `tafsir.attribution`, `tafsir.close`)
+- [X] T135 [P] [US5] Create DTOs `backend/src/Quraan.Application/Tafsir/TafsirEntryDto.cs`, `TafsirSourceDto.cs` matching OpenAPI schema
+- [X] T136 [US5] Implement `backend/src/Quraan.Application/Tafsir/TafsirService.cs` with `GetForAyahAsync(int surahId, int numberInSurah, string source)` returning DTO or `null`; cache 24 h via `ICachedReader`
+- [X] T137 [US5] Implement `backend/src/Quraan.Api/Controllers/V1/TafsirController.cs` exposing `GET /api/v1/tafsir/{surahId}/{numberInSurah}?source=ibn-kathir-en` returning 200 or 404 ProblemDetails
+- [X] T138 [P] [US5] Implement `frontend/src/app/features/tafsir/tafsir-api.service.ts` wrapping the generated client and `frontend/src/app/features/tafsir/tafsir-panel.component.ts` (drawer / side panel) showing body + attribution or the "not available" message
+- [X] T139 [US5] Wire a Tafsir affordance into `frontend/src/app/features/quran/ayah.component.ts` opening the `TafsirPanelComponent` for the tapped Ayah; navigation between Ayahs while panel open updates content (subscribe to `currentAyah$` of a new `TafsirPanelService`)
+- [X] T140 [US5] Add US5 keys to `frontend/src/assets/i18n/{ar,en}.json` (`tafsir.title`, `tafsir.notAvailable`, `tafsir.attribution`, `tafsir.close`)
 
 **Checkpoint**: FR-021/022/023 satisfied; attribution always rendered (Principle I).
 

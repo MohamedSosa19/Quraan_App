@@ -17,6 +17,8 @@ public sealed class AudioContractTests : IClassFixture<AudioContractTests.Factor
 {
     public sealed class Factory : WebApplicationFactory<Program>
     {
+        private readonly string _dbName = "contract-audio-" + Guid.NewGuid();
+
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.UseEnvironment("Development");
@@ -24,7 +26,7 @@ public sealed class AudioContractTests : IClassFixture<AudioContractTests.Factor
             {
                 services.RemoveAll(typeof(DbContextOptions<QuraanDbContext>));
                 services.AddDbContext<QuraanDbContext>(o =>
-                    o.UseInMemoryDatabase("contract-audio-" + Guid.NewGuid()));
+                    o.UseInMemoryDatabase(_dbName));
 
                 // Replace the live IAudioTimingProvider so the contract test
                 // never hits quran.com over the network.

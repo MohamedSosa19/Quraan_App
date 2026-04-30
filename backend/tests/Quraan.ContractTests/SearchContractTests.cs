@@ -17,6 +17,8 @@ public sealed class SearchContractTests : IClassFixture<SearchContractTests.Fact
 {
     public sealed class Factory : WebApplicationFactory<Program>
     {
+        private readonly string _dbName = "contract-search-" + Guid.NewGuid();
+
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.UseEnvironment("Development");
@@ -24,7 +26,7 @@ public sealed class SearchContractTests : IClassFixture<SearchContractTests.Fact
             {
                 services.RemoveAll(typeof(DbContextOptions<QuraanDbContext>));
                 services.AddDbContext<QuraanDbContext>(o =>
-                    o.UseInMemoryDatabase("contract-search-" + Guid.NewGuid()));
+                    o.UseInMemoryDatabase(_dbName));
             });
         }
     }

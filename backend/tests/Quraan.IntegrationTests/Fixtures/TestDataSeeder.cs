@@ -36,6 +36,22 @@ public static class TestDataSeeder
         var translations = BuildAlFatihaTranslations();
         await db.AyahTranslations.AddRangeAsync(translations).ConfigureAwait(false);
 
+        // US5 — Tafsir for Al-Fatiha Ayah 2 (and only Ayah 2). Ayahs 1, 3-7
+        // intentionally have no entry so the "not available" path is testable.
+        db.TafsirSources.Add(new TafsirSource
+        {
+            Id = 1,
+            Code = "ibn-kathir-en",
+            Name = "Tafsir Ibn Kathir (Mubarakpuri abridged)",
+            Language = "en",
+            Attribution = "Public-domain English digest by Mawlana Safi-ur-Rahman Mubarakpuri (spa5k/tafsir_api).",
+        });
+        db.TafsirEntries.Add(new TafsirEntry
+        {
+            Id = 1, AyahId = 2, TafsirSourceId = 1,
+            Body = "All praise belongs to Allah, the Lord of all the worlds. He is the Sustainer and Cherisher of every created thing.",
+        });
+
         await db.SaveChangesAsync().ConfigureAwait(false);
     }
 

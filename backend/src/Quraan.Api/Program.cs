@@ -12,6 +12,7 @@ using Quraan.Application.Ayahs;
 using Quraan.Application.Caching;
 using Quraan.Application.Search;
 using Quraan.Application.Surahs;
+using Quraan.Application.Tafsir;
 using Quraan.Application.Users;
 using Quraan.Domain.Repositories;
 using Quraan.Infrastructure.ExternalAudio;
@@ -110,6 +111,7 @@ builder.Services.AddScoped<IUserProfileService, UserProfileService>();
 builder.Services.AddSingleton<IAudioUrlBuilder, AlQuranCloudClient>();
 builder.Services.AddScoped<IAudioService, AudioService>();
 builder.Services.AddScoped<ISearchService, SearchService>();
+builder.Services.AddScoped<ITafsirService, TafsirService>();
 
 // quran.com timing API — typed HttpClient with 5s timeout + Polly retry (R-04, FR-014).
 builder.Services.AddHttpClient<IAudioTimingProvider, QuranComClient>(c =>

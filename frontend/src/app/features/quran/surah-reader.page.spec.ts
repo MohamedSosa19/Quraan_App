@@ -7,6 +7,7 @@ import { convertToParamMap, ParamMap } from '@angular/router';
 import { signal } from '@angular/core';
 
 import { AudioPlayerService } from '../audio/audio-player.service';
+import { TafsirApiService } from '../tafsir/tafsir-api.service';
 import { Ayah, QuranApiService, SurahDetail } from './quran-api.service';
 import { SurahReaderPage } from './surah-reader.page';
 
@@ -79,6 +80,10 @@ describe('SurahReaderPage', () => {
           useValue: { paramMap: paramMap$, queryParamMap: queryParamMap$ },
         },
         { provide: AudioPlayerService, useValue: audioStub },
+        {
+          provide: TafsirApiService,
+          useValue: jasmine.createSpyObj<TafsirApiService>('TafsirApiService', ['getEntry']),
+        },
       ],
     }).compileComponents();
   });
