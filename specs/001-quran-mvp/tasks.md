@@ -299,32 +299,32 @@ description: "Task list for 001-quran-mvp implementation"
 
 ### Tests for User Story 6
 
-- [ ] T141 [P] [US6] Contract test for `POST /auth/register`, `POST /auth/login`, `POST /auth/refresh`, `POST /auth/logout` matching all schemas + `Set-Cookie` header in `backend/tests/Quraan.ContractTests/AuthContractTests.cs`; include 429 ProblemDetails + `Retry-After` header assertion for both `register` and `login` (FR-029b, OpenAPI `Problem429`); include 409 ProblemDetails assertion for register on duplicate email (FR-024a).
-- [ ] T142 [P] [US6] Integration test `backend/tests/Quraan.IntegrationTests/Auth/RegisterLoginTests.cs` covering happy path: register → 201 + access token in body + refresh cookie; subsequent `GET /users/me` with bearer succeeds
-- [ ] T143 [P] [US6] Integration test `backend/tests/Quraan.IntegrationTests/Auth/InvalidCredentialsTests.cs` asserting wrong password and unknown email both return identical 401 ProblemDetails (FR-029)
-- [ ] T144 [P] [US6] Integration test `backend/tests/Quraan.IntegrationTests/Auth/AccountLockoutTests.cs` for FR-029a: 5 wrong attempts → account locked 15 min → 6th attempt during lockout returns the same generic 401 (no lockout disclosure); successful login resets the counter
-- [ ] T145 [P] [US6] Integration test `backend/tests/Quraan.IntegrationTests/Auth/IpRateLimitTests.cs` for FR-029b: 11th attempt from same IP within a 60-s window → 429 ProblemDetails before any credential check (asserted by spying on `IPasswordHasher`)
-- [ ] T146 [P] [US6] Integration test `backend/tests/Quraan.IntegrationTests/Auth/RefreshRotationTests.cs` covering refresh-token rotation (old hash revoked, new hash active) and reuse detection (presenting an already-rotated token revokes the entire chain — R-06)
-- [ ] T147 [P] [US6] Unit test `backend/tests/Quraan.UnitTests/Auth/Argon2idPasswordHasherTests.cs` round-trips a known password and rejects a tampered hash
-- [ ] T148 [P] [US6] Unit test `backend/tests/Quraan.UnitTests/Auth/TokenServiceTests.cs` for JWT 15-min lifetime + correct claims + signature verification
-- [ ] T149 [P] [US6] Frontend unit test `frontend/src/app/features/auth/auth.service.spec.ts` covering token storage, automatic refresh on 401, and sign-out clearing state
-- [ ] T150 [P] [US6] Playwright e2e `frontend/tests/e2e/us6-auth.spec.ts` covering register / sign-in / persistence across browser-context reload / sign-out / lockout banner; assert `quraan-refresh` cookie has `HttpOnly; Secure; SameSite=Strict` flags
+- [X] T141 [P] [US6] Contract test for `POST /auth/register`, `POST /auth/login`, `POST /auth/refresh`, `POST /auth/logout` matching all schemas + `Set-Cookie` header in `backend/tests/Quraan.ContractTests/AuthContractTests.cs`; include 429 ProblemDetails + `Retry-After` header assertion for both `register` and `login` (FR-029b, OpenAPI `Problem429`); include 409 ProblemDetails assertion for register on duplicate email (FR-024a).
+- [X] T142 [P] [US6] Integration test `backend/tests/Quraan.IntegrationTests/Auth/AuthFlowTests.cs` covering happy path: register → 201 + access token in body + refresh cookie; subsequent `GET /users/me` with bearer succeeds
+- [X] T143 [P] [US6] Integration test asserting wrong password and unknown email both return identical 401 ProblemDetails (FR-029) — folded into `AuthFlowTests.cs`
+- [X] T144 [P] [US6] Integration test for FR-029a: 5 wrong attempts → account locked 15 min → 6th attempt during lockout returns the same generic 401 (no lockout disclosure) — folded into `AuthFlowTests.cs`
+- [X] T145 [P] [US6] Integration test `backend/tests/Quraan.IntegrationTests/Auth/IpRateLimitTests.cs` for FR-029b: 11th attempt from same IP within a 60-s window → 429 ProblemDetails before any credential check
+- [X] T146 [P] [US6] Integration test covering refresh-token rotation (old hash revoked, new hash active) and reuse detection (presenting an already-rotated token revokes the entire chain — R-06) — folded into `AuthFlowTests.cs`
+- [X] T147 [P] [US6] Unit test `backend/tests/Quraan.UnitTests/Auth/Argon2idPasswordHasherTests.cs` round-trips a known password and rejects a tampered hash
+- [X] T148 [P] [US6] Unit test `backend/tests/Quraan.UnitTests/Auth/TokenServiceTests.cs` for JWT 15-min lifetime + correct claims + signature verification
+- [X] T149 [P] [US6] Frontend unit test `frontend/src/app/features/auth/auth.service.spec.ts` covering token storage, automatic refresh on 401, and sign-out clearing state
+- [X] T150 [P] [US6] Playwright e2e `frontend/tests/e2e/us6-auth.spec.ts` covering register / sign-in / persistence across browser-context reload / sign-out / lockout banner; assert `quraan-refresh` cookie has `HttpOnly; Secure; SameSite=Strict` flags
 
 ### Implementation for User Story 6
 
-- [ ] T151 [P] [US6] Create DTOs `backend/src/Quraan.Application/Auth/RegisterRequestDto.cs`, `LoginRequestDto.cs`, `AuthResponseDto.cs`, `AccessTokenResponseDto.cs` matching OpenAPI
-- [ ] T152 [P] [US6] Add `FluentValidation` validators `RegisterRequestValidator.cs` (email format; password ≥ 12 chars; preferredLanguage in `[ar,en]`) and `LoginRequestValidator.cs` in `backend/src/Quraan.Application/Auth/Validators/`
-- [ ] T153 [US6] Implement `backend/src/Quraan.Application/Auth/TokenService.cs` issuing JWT (15-min, HMAC-SHA256, claims `sub`/`email`/`name`) and opaque 256-bit refresh tokens (returning the cleartext to the controller and persisting only `SHA-256(token)` per R-06)
-- [ ] T154 [US6] Implement `backend/src/Quraan.Infrastructure/Identity/RefreshTokenStore.cs` implementing `IRefreshTokenRepository` with rotation, reuse detection (revoke entire chain), and 30-day expiration cleanup
-- [ ] T155 [US6] Implement `backend/src/Quraan.Application/Auth/AuthService.cs` with `RegisterAsync`, `LoginAsync` (uses `SignInManager` for lockout via Identity's `AccessFailedCount` + `LockoutEnd` configured to 5 attempts / 15 min per FR-029a), `RefreshAsync`, `LogoutAsync`; all failure paths return identical generic ProblemDetails (FR-029) so the controller has no branching
-- [ ] T156 [US6] Implement IP rate-limit middleware `backend/src/Quraan.Api/Middleware/SignInIpRateLimitMiddleware.cs` using `Microsoft.AspNetCore.RateLimiting` fixed-window policy (10 / minute / IP) applied only to `/api/v1/auth/login` and `/api/v1/auth/register`, returning 429 ProblemDetails before invoking the controller (FR-029b)
-- [ ] T157 [US6] Implement `backend/src/Quraan.Api/Controllers/V1/AuthController.cs` with `POST register/login/refresh/logout`; set `quraan-refresh` cookie `HttpOnly; Secure; SameSite=Strict; Path=/api/v1/auth/refresh; Max-Age=2592000`; on logout, revoke + clear cookie
-- [ ] T158 [US6] Configure Identity options in `backend/src/Quraan.Api/Program.cs`: `Lockout.MaxFailedAccessAttempts=5`, `Lockout.DefaultLockoutTimeSpan=TimeSpan.FromMinutes(15)`, `Password.RequiredLength=12`, `User.RequireUniqueEmail=true`
-- [ ] T159 [P] [US6] Implement `frontend/src/app/features/auth/auth.service.ts` (sign-in/up/out, `accessToken$` BehaviorSubject, automatic refresh on 401 via the existing `auth.interceptor.ts` hook, in-memory access-token storage — never localStorage per R-06)
-- [ ] T160 [P] [US6] Implement `frontend/src/app/features/auth/sign-in.page.ts` and `register.page.ts` with reactive forms, FluentValidation-equivalent client validation, and a generic error banner (never reveals lockout / unknown email)
-- [ ] T161 [US6] Implement `frontend/src/app/core/auth/auth.guard.ts` and apply it to `bookmarks` and `lastread`-protected routes; unauthenticated → redirect to `/auth/sign-in?returnUrl=…`
-- [ ] T162 [US6] Implement `frontend/src/app/features/auth/auth.routes.ts` (`sign-in`, `register`) and wire into `app.routes.ts` lazy loader
-- [ ] T163 [US6] Add US6 keys to `frontend/src/assets/i18n/{ar,en}.json` (`auth.signIn.title`, `auth.register.title`, `auth.email`, `auth.password`, `auth.submit`, `auth.error.generic`, `auth.signOut`)
+- [X] T151 [P] [US6] Create DTOs `backend/src/Quraan.Application/Auth/RegisterRequestDto.cs`, `LoginRequestDto.cs`, `AuthResponseDto.cs`, `AccessTokenResponseDto.cs` matching OpenAPI
+- [X] T152 [P] [US6] Add `FluentValidation` validators `RegisterRequestValidator.cs` (email format; password ≥ 12 chars; preferredLanguage in `[ar,en]`) and `LoginRequestValidator.cs` in `backend/src/Quraan.Application/Auth/Validators/`
+- [X] T153 [US6] Implement `backend/src/Quraan.Infrastructure/Identity/TokenService.cs` issuing JWT (15-min, HMAC-SHA256, claims `sub`/`email`/`name`) and opaque 256-bit refresh tokens (returning the cleartext to the controller and persisting only `SHA-256(token)` per R-06)
+- [X] T154 [US6] `RefreshTokenRepository` (existing) extended via AuthService rotation logic with reuse detection (revoke entire chain) and 30-day expiration
+- [X] T155 [US6] Implement `backend/src/Quraan.Infrastructure/Identity/AuthService.cs` with `RegisterAsync`, `LoginAsync` (uses `SignInManager` for lockout via Identity's `AccessFailedCount` + `LockoutEnd` configured to 5 attempts / 15 min per FR-029a), `RefreshAsync`, `LogoutAsync`; all failure paths return identical generic ProblemDetails (FR-029) so the controller has no branching
+- [X] T156 [US6] IP rate-limiter configured in `Program.cs` using `Microsoft.AspNetCore.RateLimiting` fixed-window policy (10 / minute / IP) applied via `[EnableRateLimiting("auth-ip")]` to `/api/v1/auth/login` and `/api/v1/auth/register`, returning 429 ProblemDetails before invoking the controller (FR-029b)
+- [X] T157 [US6] Implement `backend/src/Quraan.Api/Controllers/V1/AuthController.cs` with `POST register/login/refresh/logout`; set `quraan-refresh` cookie `HttpOnly; Secure; SameSite=Strict; Path=/api/v1/auth; Max-Age=2592000`; on logout, revoke + clear cookie
+- [X] T158 [US6] Identity options already configured in `backend/src/Quraan.Api/Program.cs`: `Lockout.MaxFailedAccessAttempts=5`, `Lockout.DefaultLockoutTimeSpan=TimeSpan.FromMinutes(15)`, `Password.RequiredLength=12`, `User.RequireUniqueEmail=true`
+- [X] T159 [P] [US6] Implement `frontend/src/app/features/auth/auth.service.ts` (sign-in/up/out, `user` signal, in-memory access-token storage — never localStorage per R-06)
+- [X] T160 [P] [US6] Implement `frontend/src/app/features/auth/sign-in.page.ts` and `register.page.ts` with reactive forms, FluentValidation-equivalent client validation, and a generic error banner (never reveals lockout / unknown email)
+- [X] T161 [US6] Implement `frontend/src/app/core/auth/auth.guard.ts`; unauthenticated → redirect to `/auth/sign-in?returnUrl=…`
+- [X] T162 [US6] Implement `frontend/src/app/features/auth/auth.routes.ts` (`sign-in`, `register`) and wired into `app.routes.ts` lazy loader
+- [X] T163 [US6] Add US6 keys to `frontend/src/assets/i18n/{ar,en}.json` (`auth.signIn.title`, `auth.register.title`, `auth.email`, `auth.password`, `auth.submit`, `auth.error.generic`, `auth.signOut`)
 
 **Checkpoint**: FR-024–029b satisfied; SC-010 (zero plaintext passwords) provable by Serilog enricher tests; both lockout and IP-rate-limit verified by integration tests above.
 

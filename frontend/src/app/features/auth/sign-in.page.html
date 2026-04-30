@@ -1,0 +1,43 @@
+<section class="auth">
+  <h1>{{ 'auth.signIn.title' | translate }}</h1>
+
+  <form class="auth__form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <label class="auth__field">
+      <span>{{ 'auth.email' | translate }}</span>
+      <input
+        type="email"
+        autocomplete="email"
+        formControlName="email"
+        required
+        data-testid="auth-email"
+      />
+    </label>
+
+    <label class="auth__field">
+      <span>{{ 'auth.password' | translate }}</span>
+      <input
+        type="password"
+        autocomplete="current-password"
+        formControlName="password"
+        required
+        data-testid="auth-password"
+      />
+    </label>
+
+    @if (hasError()) {
+      <p class="auth__error" role="alert" data-testid="auth-error">
+        {{ 'auth.error.generic' | translate }}
+      </p>
+    }
+
+    <button type="submit" data-testid="auth-submit" [disabled]="form.invalid || submitting()">
+      {{ 'auth.submit' | translate }}
+    </button>
+  </form>
+
+  <p class="auth__alt">
+    <a routerLink="/auth/register" data-testid="auth-register-link">
+      {{ 'auth.register.title' | translate }}
+    </a>
+  </p>
+</section>

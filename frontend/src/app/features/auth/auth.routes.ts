@@ -1,5 +1,13 @@
 import { Routes } from '@angular/router';
 
-// Populated in the matching user-story phase. Empty until then so the lazy
-// loader in app.routes.ts resolves cleanly.
-export const routes: Routes = [];
+export const routes: Routes = [
+  {
+    path: 'sign-in',
+    loadComponent: () => import('./sign-in.page').then((m) => m.SignInPage),
+  },
+  {
+    path: 'register',
+    loadComponent: () => import('./register.page').then((m) => m.RegisterPage),
+  },
+  { path: '', pathMatch: 'full', redirectTo: 'sign-in' },
+];

@@ -70,5 +70,19 @@
     "notAvailable": "Tafsir not available for this Ayah.",
     "loadFailed": "Could not load Tafsir.",
     "attribution": "Source: {{name}}"
+  },
+  "auth": {
+    "signIn": { "title": "Sign in" },
+    "register": { "title": "Create account" },
+    "email": "Email",
+    "password": "Password",
+    "passwordHint": "At least 12 characters",
+    "displayName": "Display name (optional)",
+    "submit": "Continue",
+    "signOut": "Sign out",
+    "error": {
+      "generic": "The email or password you entered is incorrect.",
+      "emailTaken": "An account with this email already exists."
+    }
   }
 }

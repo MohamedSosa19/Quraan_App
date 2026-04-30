@@ -1,0 +1,55 @@
+<section class="auth">
+  <h1>{{ 'auth.register.title' | translate }}</h1>
+
+  <form class="auth__form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <label class="auth__field">
+      <span>{{ 'auth.email' | translate }}</span>
+      <input
+        type="email"
+        autocomplete="email"
+        formControlName="email"
+        required
+        data-testid="auth-email"
+      />
+    </label>
+
+    <label class="auth__field">
+      <span>{{ 'auth.password' | translate }}</span>
+      <input
+        type="password"
+        autocomplete="new-password"
+        formControlName="password"
+        required
+        minlength="12"
+        data-testid="auth-password"
+      />
+      <small>{{ 'auth.passwordHint' | translate }}</small>
+    </label>
+
+    <label class="auth__field">
+      <span>{{ 'auth.displayName' | translate }}</span>
+      <input type="text" formControlName="displayName" data-testid="auth-display-name" />
+    </label>
+
+    @if (emailTaken()) {
+      <p class="auth__error" role="alert" data-testid="auth-email-taken">
+        {{ 'auth.error.emailTaken' | translate }}
+      </p>
+    }
+    @if (hasError()) {
+      <p class="auth__error" role="alert" data-testid="auth-error">
+        {{ 'auth.error.generic' | translate }}
+      </p>
+    }
+
+    <button type="submit" data-testid="auth-submit" [disabled]="form.invalid || submitting()">
+      {{ 'auth.submit' | translate }}
+    </button>
+  </form>
+
+  <p class="auth__alt">
+    <a routerLink="/auth/sign-in" data-testid="auth-signin-link">
+      {{ 'auth.signIn.title' | translate }}
+    </a>
+  </p>
+</section>
