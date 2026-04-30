@@ -1,6 +1,8 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+
+import { LastReadService } from '../../core/last-read.service';
 
 @Component({
   selector: 'app-home',
@@ -13,6 +15,16 @@ import { TranslateModule } from '@ngx-translate/core';
       <a class="home__cta" routerLink="/surahs">
         {{ 'home.openSurahs' | translate }}
       </a>
+      @if (lastRead.position(); as p) {
+        <a
+          class="home__continue"
+          data-testid="home-continue-reading"
+          [routerLink]="['/surahs', p.surahId]"
+          [queryParams]="{ ayah: p.numberInSurah }"
+        >
+          {{ 'home.continueReading' | translate: { surah: p.surahId, ayah: p.numberInSurah } }}
+        </a>
+      }
     </section>
   `,
   styles: [
@@ -49,8 +61,26 @@ import { TranslateModule } from '@ngx-translate/core';
           filter: brightness(1.05);
         }
       }
+
+      .home__continue {
+        display: inline-block;
+        margin-block-start: var(--space-4);
+        padding-block: var(--space-2);
+        padding-inline: var(--space-4);
+        border: 1px solid var(--color-border, #d4d4d8);
+        border-radius: var(--radius-md);
+        color: var(--color-fg);
+        text-decoration: none;
+        font-weight: 500;
+
+        &:hover {
+          background: var(--color-surface-hover, rgba(0, 0, 0, 0.04));
+        }
+      }
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HomePage {}
+export class HomePage {
+  protected readonly lastRead = inject(LastReadService);
+}

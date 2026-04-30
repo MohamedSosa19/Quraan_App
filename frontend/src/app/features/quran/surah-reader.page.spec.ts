@@ -1,3 +1,5 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, provideRouter } from '@angular/router';
 import { provideTranslateService, TranslateLoader, TranslateNoOpLoader } from '@ngx-translate/core';
@@ -68,6 +70,8 @@ describe('SurahReaderPage', () => {
     await TestBed.configureTestingModule({
       imports: [SurahReaderPage],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         provideRouter([]),
         provideTranslateService({
           defaultLanguage: 'en',

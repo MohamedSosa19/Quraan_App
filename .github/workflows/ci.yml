@@ -46,9 +46,13 @@ jobs:
       - name: Unit tests
         working-directory: backend
         run: dotnet test tests/Quraan.UnitTests/Quraan.UnitTests.csproj --no-build -c Release --logger "trx;LogFileName=unit.trx"
-      - name: Integration tests
+      - name: Integration tests (excludes Performance smoke)
         working-directory: backend
-        run: dotnet test tests/Quraan.IntegrationTests/Quraan.IntegrationTests.csproj --no-build -c Release --logger "trx;LogFileName=integration.trx"
+        run: dotnet test tests/Quraan.IntegrationTests/Quraan.IntegrationTests.csproj --no-build -c Release --filter "Category!=Performance" --logger "trx;LogFileName=integration.trx"
+      - name: Performance smoke (T182, T182a — informational, non-blocking)
+        working-directory: backend
+        continue-on-error: true
+        run: dotnet test tests/Quraan.IntegrationTests/Quraan.IntegrationTests.csproj --no-build -c Release --filter "Category=Performance" --logger "trx;LogFileName=performance.trx"
       - name: Contract tests
         working-directory: backend
         run: dotnet test tests/Quraan.ContractTests/Quraan.ContractTests.csproj --no-build -c Release --logger "trx;LogFileName=contract.trx"
@@ -78,13 +82,15 @@ jobs:
       - name: Lint (Stylelint)
         working-directory: frontend
         run: npx stylelint "src/**/*.scss"
+      - name: WCAG AA contrast gate (T181)
+        run: node tools/check-contrast.mjs
       - name: Custom rule unit tests
         working-directory: frontend
         run: node --test eslint-rules/__tests__
       - name: Unit tests (Karma)
         working-directory: frontend
         run: npx ng test --watch=false --browsers=ChromeHeadless --code-coverage
-      - name: Production build (enforces angular.json budgets)
+      - name: Production build — bundle-size gate (T183, Principle VI)
         working-directory: frontend
         run: npx ng build --configuration production
       - name: Install Playwright browsers

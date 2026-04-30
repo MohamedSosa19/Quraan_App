@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Quraan.Api.Logging;
 using Quraan.Api.Middleware;
 using System.Net;
 using System.Threading.RateLimiting;
@@ -17,6 +18,7 @@ using Quraan.Application.Auth;
 using Quraan.Application.Auth.Validators;
 using Quraan.Application.Ayahs;
 using Quraan.Application.Bookmarks;
+using Quraan.Application.LastRead;
 using Quraan.Application.Caching;
 using Quraan.Application.Search;
 using Quraan.Application.Surahs;
@@ -42,6 +44,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((ctx, lc) => lc
     .ReadFrom.Configuration(ctx.Configuration)
     .Enrich.FromLogContext()
+    .Enrich.With<PiiStrippingEnricher>()
     .WriteTo.Console());
 
 // --- Persistence -----------------------------------------------------------
@@ -123,6 +126,7 @@ builder.Services.AddScoped<ITafsirService, TafsirService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IBookmarkService, BookmarkService>();
+builder.Services.AddScoped<ILastReadService, LastReadService>();
 
 // FluentValidation — auto-runs on [FromBody] DTOs that have a registered validator.
 builder.Services.AddFluentValidationAutoValidation();

@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
 
+import { LastReadService } from '../../core/last-read.service';
 import { AudioPlayerComponent } from '../audio/audio-player.component';
 import { AudioPlayerService } from '../audio/audio-player.service';
 import { TafsirPanelComponent } from '../tafsir/tafsir-panel.component';
@@ -24,6 +25,7 @@ export class SurahReaderPage {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly player = inject(AudioPlayerService);
+  private readonly lastRead = inject(LastReadService);
 
   /** R-09: highlight only — never auto-scroll. */
   readonly playingAyah = this.player.currentAyah;
@@ -47,8 +49,12 @@ export class SurahReaderPage {
     this.route.queryParamMap.subscribe((q) => {
       const ayah = q.get('ayah');
       if (ayah) {
-        // Defer until after detail loads.
-        setTimeout(() => this.scrollToAyah(Number.parseInt(ayah, 10)), 0);
+        const n = Number.parseInt(ayah, 10);
+        if (Number.isFinite(n) && n >= 1) {
+          // Defer until after detail loads.
+          setTimeout(() => this.scrollToAyah(n), 0);
+          void this.lastRead.record(this.surahId(), n);
+        }
       }
     });
 
@@ -64,6 +70,9 @@ export class SurahReaderPage {
     try {
       const detail = await firstValueFrom(this.api.getSurah(id));
       this.detail.set(detail);
+      // Record the surah landing if no specific ayah was requested via query.
+      const ayahParam = this.route.snapshot.queryParamMap.get('ayah');
+      if (!ayahParam) void this.lastRead.record(id, 1);
     } catch {
       this.error.set(true);
     } finally {
@@ -88,6 +97,7 @@ export class SurahReaderPage {
     const detail = this.detail();
     if (!Number.isFinite(raw) || raw < 1 || !detail || raw > detail.ayahs.length) return;
     this.scrollToAyah(raw);
+    void this.lastRead.record(this.surahId(), raw);
   }
 
   scrollToAyah(numberInSurah: number): void {

@@ -15,7 +15,8 @@
   "home": {
     "title": "Read the Quran",
     "subtitle": "Browse all 114 Surahs with English translation",
-    "openSurahs": "Open Surahs"
+    "openSurahs": "Open Surahs",
+    "continueReading": "Continue reading: Surah {{surah}}, Ayah {{ayah}}"
   },
   "surahList": {
     "title": "Surahs",

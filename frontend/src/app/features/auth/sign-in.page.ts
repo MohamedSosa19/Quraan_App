@@ -4,6 +4,8 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
 
+import { LastReadService } from '../../core/last-read.service';
+
 import { AuthService } from './auth.service';
 
 @Component({
@@ -17,6 +19,7 @@ import { AuthService } from './auth.service';
 export class SignInPage {
   private readonly fb = inject(FormBuilder);
   private readonly auth = inject(AuthService);
+  private readonly lastRead = inject(LastReadService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
@@ -34,6 +37,8 @@ export class SignInPage {
     try {
       const { email, password } = this.form.getRawValue();
       await firstValueFrom(this.auth.signIn(email, password));
+      // R-13/FR-035: replay anonymous last-read to the server (last-write-wins).
+      await this.lastRead.mergeOnSignIn();
       const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') ?? '/';
       await this.router.navigateByUrl(returnUrl);
     } catch {

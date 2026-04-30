@@ -2,6 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { Observable, firstValueFrom, of, tap } from 'rxjs';
 
+import { LastReadService } from '../../core/last-read.service';
+
 export interface AuthUser {
   id: string;
   email: string;
@@ -25,6 +27,7 @@ const TOKEN_KEY = '__quraan_access_token__';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
+  private readonly lastRead = inject(LastReadService);
 
   readonly user = signal<AuthUser | null>(null);
   readonly isAuthenticated = computed(() => this.user() !== null);
@@ -70,5 +73,8 @@ export class AuthService {
   private clear(): void {
     (globalThis as Record<string, unknown>)[TOKEN_KEY] = undefined;
     this.user.set(null);
+    // R-13: dropping the local last-read on sign-out keeps the next user
+    // (or anonymous session) from inheriting the previous user's position.
+    this.lastRead.clear();
   }
 }
